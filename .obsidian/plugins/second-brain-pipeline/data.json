@@ -1,0 +1,34 @@
+{
+  "geminiApiKey": "AIzaSyD3lpHzo4yxQM2IlMYMF5GF4K1WA-xFC98",
+  "geminiModel": "gemma-4-31b-it",
+  "temperature": 0.2,
+  "maxContextChars": 120000,
+  "maxOutputTokens": 4096,
+  "retryCount": 3,
+  "retryBaseDelayMs": 2000,
+  "pdfInlineMaxBytes": 10485760,
+  "rawFolder": "raw",
+  "stagingFolder": "staging",
+  "wikiFolder": "wiki",
+  "conceptsFolder": "wiki/概念",
+  "articlesFolder": "wiki/articles",
+  "queriesFolder": "wiki/queries",
+  "lintFolder": "wiki/lint",
+  "queryQueuePath": "system/queue/_queue.md",
+  "autoStageTextFiles": true,
+  "includeRawWhenStagingEmpty": true,
+  "compileCache": {
+    "raw/ISO 17664-2 2021.pdf": {
+      "fingerprint": "pdf:43655cc42244e32b00fffde2cc6bd09a399fdffd6a5215a4dcb4b6f48b60d5ba",
+      "compileProfile": "zh-hant-v2",
+      "sourceKind": "pdf",
+      "articlePath": "wiki/articles/ISO 17664-2 2021 非臨界醫療器材之處理資訊規範.md",
+      "conceptPaths": [
+        "wiki/概念/非臨界醫療器材 (Non-critical Medical Devices).md",
+        "wiki/概念/Spaulding 分類法 (Spaulding Classification).md",
+        "wiki/概念/醫療器材處理驗證 (Validation of Medical Device Processing).md"
+      ],
+      "updatedAt": "2026-04-07T16:10:42.692Z"
+    }
+  }
+}

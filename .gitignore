@@ -1,0 +1,12 @@
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+.obsidian/plugins/obsidian-git/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Any local config
+.env
