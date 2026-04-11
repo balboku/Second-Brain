@@ -54,6 +54,7 @@ const DEFAULT_SETTINGS = {
   autoStageTextFiles: true,
   includeRawWhenStagingEmpty: true,
   compileCache: {},
+  embeddingsCache: {},
 };
 
 const COMPILE_SCHEMA = {
@@ -1465,6 +1466,44 @@ class SecondBrainPipelinePlugin extends Plugin {
     return { compiledCount, unchangedCount, conceptCount, skippedFiles };
   }
 
+  async getGeminiEmbedding(text) {
+    const apiKey = this.getApiKey();
+    if (!apiKey) {
+      throw new Error("No Gemini API key found for embedding.");
+    }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2-preview:embedContent?key=${apiKey}`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "models/gemini-embedding-2-preview",
+        content: { parts: [{ text }] }
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Embedding API error: ${await response.text()}`);
+    }
+    const data = await response.json();
+    if (!data.embedding || !data.embedding.values) {
+      throw new Error("Invalid embedding response");
+    }
+    return data.embedding.values;
+  }
+
+  cosineSimilarity(vecA, vecB) {
+    if (!vecA || !vecB || vecA.length !== vecB.length || vecA.length === 0) return 0;
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < vecA.length; i++) {
+        dotProduct += vecA[i] * vecB[i];
+        normA += vecA[i] * vecA[i];
+        normB += vecB[i] * vecB[i];
+    }
+    if (normA === 0 || normB === 0) return 0;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  }
+
   scoreFileForQuery(content, query) {
     const lowerContent = String(content || "").toLowerCase();
     const lowerQuery = String(query || "").toLowerCase().trim();
@@ -1489,10 +1528,52 @@ class SecondBrainPipelinePlugin extends Plugin {
       .filter((file) => !file.path.startsWith(`${cleanPath(this.settings.lintFolder)}/`))
       .filter((file) => basename(file.path) !== "_queue.md");
 
+    if (!this.settings.embeddingsCache) {
+      this.settings.embeddingsCache = {};
+    }
+    let cacheUpdated = false;
+
+    let queryEmbedding = null;
+    try {
+      if (query && query.trim()) {
+        new Notice("Second Brain Pipeline: 正在產生提問向量 (Hybrid Search)...", 4000);
+        queryEmbedding = await this.getGeminiEmbedding(query.trim());
+      }
+    } catch (e) {
+      console.warn("[second-brain-pipeline] Fetching query embedding failed:", e);
+    }
+
     const scored = [];
     for (const file of candidates) {
       const content = await this.app.vault.cachedRead(file);
-      const score = this.scoreFileForQuery(content, query);
+      
+      const literalScore = this.scoreFileForQuery(content, query);
+      
+      let semanticScore = 0;
+      let fileEmbedding = null;
+      if (queryEmbedding && content.trim()) {
+        const fingerprint = sha256(content);
+        const cached = this.settings.embeddingsCache[file.path];
+        if (cached && cached.fingerprint === fingerprint && cached.vector) {
+          fileEmbedding = cached.vector;
+        } else {
+          try {
+            const embedText = content.length > 8000 ? content.slice(0, 8000) : content;
+            fileEmbedding = await this.getGeminiEmbedding(embedText);
+            this.settings.embeddingsCache[file.path] = { fingerprint, vector: fileEmbedding };
+            cacheUpdated = true;
+          } catch (e) {
+            console.warn(`[second-brain-pipeline] Failed to embed ${file.path}:`, e);
+          }
+        }
+      }
+
+      if (fileEmbedding && queryEmbedding) {
+        semanticScore = this.cosineSimilarity(queryEmbedding, fileEmbedding);
+      }
+
+      const finalScore = literalScore + Math.max(0, semanticScore * 500);
+
       const folderPriority = file.path === joinPath(cleanPath(this.settings.wikiFolder), "全域索引.md")
         ? 0
         : file.path.startsWith("wiki/概念/")
@@ -1500,11 +1581,16 @@ class SecondBrainPipelinePlugin extends Plugin {
           : file.path.startsWith("wiki/articles/")
             ? 2
             : 3;
-      scored.push({ file, content, score, folderPriority });
+            
+      scored.push({ file, content, score: finalScore, folderPriority, literalScore, semanticScore });
+    }
+
+    if (cacheUpdated) {
+      await this.saveData(this.settings);
     }
 
     scored.sort((a, b) => {
-      if (b.score !== a.score) {
+      if (Math.abs(b.score - a.score) > 0.01) {
         return b.score - a.score;
       }
       if (a.folderPriority !== b.folderPriority) {
@@ -1515,13 +1601,17 @@ class SecondBrainPipelinePlugin extends Plugin {
 
     const selected = [];
     let total = 0;
+    let limitCount = 0;
+    
     for (const item of scored) {
+      if (limitCount >= 10) break;
       const block = `FILE: ${item.file.path}\n${truncateText(item.content, 12000)}`;
       if (total && total + block.length > this.settings.maxContextChars) {
         continue;
       }
       selected.push(item.file.path);
       total += block.length;
+      limitCount += 1;
       if (total >= this.settings.maxContextChars) {
         break;
       }
