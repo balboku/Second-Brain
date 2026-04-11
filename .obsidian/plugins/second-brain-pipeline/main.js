@@ -1101,7 +1101,105 @@ class SecondBrainPipelinePlugin extends Plugin {
     return Array.from(candidateMap.values()).map((item) => item.file);
   }
 
-  async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource) {
+  getMimeType(extension) {
+    const ext = String(extension || "").toLowerCase();
+    if (ext === "pdf") return "application/pdf";
+    if (["mp3", "wav", "ogg"].includes(ext)) return `audio/${ext}`;
+    if (ext === "m4a") return "audio/mp4";
+    if (["mp4", "webm", "mov"].includes(ext)) return `video/${ext}`;
+    if (["jpeg", "jpg", "png", "webp"].includes(ext)) return `image/${ext === "jpg" ? "jpeg" : ext}`;
+    return "application/octet-stream";
+  }
+
+  async uploadFileToGemini(bytes, file) {
+    const apiKey = this.getApiKey();
+    if (!apiKey) throw new Error("No Gemini API key found.");
+    
+    const mimeType = this.getMimeType(file.extension);
+    const contentSize = bytes.byteLength;
+    
+    const initUrl = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`;
+    const initResponse = await fetch(initUrl, {
+      method: "POST",
+      headers: {
+        "X-Goog-Upload-Protocol": "resumable",
+        "X-Goog-Upload-Command": "start",
+        "X-Goog-Upload-Header-Content-Length": contentSize.toString(),
+        "X-Goog-Upload-Header-Content-Type": mimeType,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ file: { display_name: file.name } })
+    });
+
+    if (!initResponse.ok) {
+      throw new Error(`Failed to initialize upload: ${await initResponse.text()}`);
+    }
+
+    const uploadUrl = initResponse.headers.get("x-goog-upload-url") || initResponse.headers.get("X-Goog-Upload-URL");
+    if (!uploadUrl) {
+      throw new Error("Could not get upload URL from headers.");
+    }
+
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        "Content-Length": contentSize.toString(),
+        "X-Goog-Upload-Offset": "0",
+        "X-Goog-Upload-Command": "upload, finalize"
+      },
+      body: bytes
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Failed to upload file content: ${await uploadResponse.text()}`);
+    }
+
+    const responseData = await uploadResponse.json();
+    return responseData.file;
+  }
+
+  async waitForMetadataProcessing(fileName) {
+    const apiKey = this.getApiKey();
+    const maxRetries = 30; // Maximum ~1.5 minutes
+    const delayMs = 3000;
+
+    for (let i = 0; i < maxRetries; i++) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/${fileName}?key=${apiKey}`;
+      const response = await fetch(url, { method: "GET" });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to check file state: ${await response.text()}`);
+      }
+      
+      const fileData = await response.json();
+      const state = fileData.state;
+
+      if (state === "ACTIVE") {
+        return fileData;
+      } else if (state === "FAILED") {
+        throw new Error(`Gemini background processing failed for file: ${fileName}`);
+      }
+      
+      await sleep(delayMs);
+    }
+    throw new Error("Timeout: File analysis is taking too long to become ACTIVE.");
+  }
+
+  async deleteGeminiFile(fileName) {
+    const apiKey = this.getApiKey();
+    if (!apiKey) return;
+    const url = `https://generativelanguage.googleapis.com/v1beta/${fileName}?key=${apiKey}`;
+    try {
+      const response = await fetch(url, { method: "DELETE" });
+      if (!response.ok) {
+        console.warn(`[second-brain-pipeline] Failed to delete server file ${fileName}:`, await response.text());
+      }
+    } catch (e) {
+      console.error(`[second-brain-pipeline] Error calling delete API for ${fileName}`, e);
+    }
+  }
+
+  async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource, uploadedFile = null) {
     const systemInstruction = [
       "You are an LLM compiler for an Obsidian-based personal knowledge base.",
       "Follow the workflow documents as the governing rules.",
@@ -1131,16 +1229,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "5. related_concepts should prefer titles from the existing concept list when relevant.",
     ].join("\n");
 
-    if (preparedSource.sourceKind === "pdf") {
-      const bytes = preparedSource.bytes;
-      if (!bytes) {
-        throw new Error(`Missing PDF bytes for ${file.path}`);
-      }
-      if (bytes.byteLength > this.settings.pdfInlineMaxBytes) {
-        throw new Error(
-          `PDF too large for inline Gemini processing: ${file.path} (${bytes.byteLength} bytes > ${this.settings.pdfInlineMaxBytes} bytes).`
-        );
-      }
+    if (preparedSource.sourceKind === "pdf" && uploadedFile) {
       return {
         systemInstruction,
         sourceKind: "pdf",
@@ -1148,9 +1237,9 @@ class SecondBrainPipelinePlugin extends Plugin {
         userParts: [
           { text: intro },
           {
-            inline_data: {
-              mime_type: "application/pdf",
-              data: toBase64(bytes),
+            fileData: {
+              mimeType: this.getMimeType(file.extension),
+              fileUri: uploadedFile.uri,
             },
           },
           {
@@ -1158,6 +1247,8 @@ class SecondBrainPipelinePlugin extends Plugin {
           },
         ],
       };
+    } else if (preparedSource.sourceKind === "pdf") {
+      throw new Error(`File API object missing for PDF file processing: ${file.path}`);
     }
 
     const sourceText = preparedSource.sourceText;
@@ -1256,6 +1347,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     let cacheUpdated = false;
 
     for (const file of compileFiles) {
+      let uploadedFile = null;
       try {
         const sourcePath = cleanPath(file.path);
         const preparedSource = await this.prepareCompileSource(file);
@@ -1271,11 +1363,17 @@ class SecondBrainPipelinePlugin extends Plugin {
 
         const previousEntry = this.getCompileCacheEntry(sourcePath);
 
+        if (preparedSource.sourceKind === "pdf") {
+          uploadedFile = await this.uploadFileToGemini(preparedSource.bytes, file);
+          await this.waitForMetadataProcessing(uploadedFile.name);
+        }
+
         const compileRequest = await this.buildCompileRequest(
           file,
           workflowContext,
           existingConceptTitles,
-          preparedSource
+          preparedSource,
+          uploadedFile
         );
 
         const result = await this.requestStructuredJsonWithParts(
@@ -1336,6 +1434,11 @@ class SecondBrainPipelinePlugin extends Plugin {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         skippedFiles.push(`${file.path}: ${message}`);
+      } finally {
+        if (uploadedFile && uploadedFile.name) {
+          await this.deleteGeminiFile(uploadedFile.name);
+          uploadedFile = null;
+        }
       }
     }
 
