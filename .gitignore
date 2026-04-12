@@ -11,4 +11,4 @@ Thumbs.db
 # Any local config
 .env
 
-.pdf
+*.pdf
