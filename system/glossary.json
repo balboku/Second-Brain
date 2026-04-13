@@ -1,0 +1,13 @@
+{
+  "mappings": {
+    "Breast Surgery": "Mastectomy",
+    "Tonsillectomy": "扁桃腺切除術",
+    "Seroma": "漿液腫",
+    "Thyroid Surgery": "Thyroidectomy",
+    "Axillary Dissection": "腋下淋巴結廓清術"
+  },
+  "conventions": {
+    "file_naming": "繁體中文描述 + (英文括號)",
+    "link_style": "[[概念檔案名稱]]"
+  }
+}

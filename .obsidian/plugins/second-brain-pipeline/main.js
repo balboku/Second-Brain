@@ -396,6 +396,12 @@ class SecondBrainPipelinePlugin extends Plugin {
       name: "Second Brain Pipeline: Run Phase 4 lint",
       callback: () => this.runSafely(() => this.runPhase4()),
     });
+
+    this.addCommand({
+      id: "run-link-auto-fix",
+      name: "Second Brain Pipeline: Run link auto-fix",
+      callback: () => this.runSafely(() => this.runLinkAutoFix()),
+    });
   }
 
   async loadSettings() {
@@ -461,6 +467,65 @@ class SecondBrainPipelinePlugin extends Plugin {
       return "";
     }
     return this.app.vault.cachedRead(file);
+  }
+
+  async readGlossary() {
+    const glossaryPath = "system/glossary.json";
+    const content = await this.readText(glossaryPath);
+    if (!content) return null;
+    try {
+      return JSON.parse(content);
+    } catch (e) {
+      console.warn("[second-brain-pipeline] Failed to parse glossary.json:", e);
+      return null;
+    }
+  }
+
+  validateContent(content) {
+    if (!content || content.trim().length === 0) {
+      return { valid: false, reason: "Content is empty" };
+    }
+    if (!content.trimStart().startsWith("---")) {
+      return { valid: false, reason: "Missing YAML Frontmatter" };
+    }
+    return { valid: true };
+  }
+
+  calculateSimilarity(s1, s2) {
+    let longer = s1;
+    let shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    const longerLength = longer.length;
+    if (longerLength === 0) {
+      return 1.0;
+    }
+    return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+  }
+
+  editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+    const costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+      let lastValue = i;
+      for (let j = 0; j <= s2.length; j++) {
+        if (i === 0) costs[j] = j;
+        else {
+          if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0) costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
   }
 
   async readBinary(file) {
@@ -1201,10 +1266,15 @@ class SecondBrainPipelinePlugin extends Plugin {
   }
 
   async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource, uploadedFile = null) {
+    const glossary = await this.readGlossary();
+    const glossaryText = glossary ? `\nGLOSSARY MAPPINGS: ${JSON.stringify(glossary.mappings)}\n` : "";
+
     const systemInstruction = [
       "You are an LLM compiler for an Obsidian-based personal knowledge base.",
       "Follow the workflow documents as the governing rules.",
+      glossaryText,
       "Write all human-readable output in Traditional Chinese used in Taiwan (zh-Hant).",
+      "When creating [[links]], prioritize the exact terms from the provided GLOSSARY MAPPINGS if a concept matches.",
       "This rule applies even when the source document is in English or another language.",
       "Keep formal standard numbers, product names, and unavoidable technical terms in their original form when needed.",
       "Prefer concise, well-structured markdown.",
@@ -1395,10 +1465,12 @@ class SecondBrainPipelinePlugin extends Plugin {
           sourceKind: compileRequest.sourceKind,
         });
 
-        const articlePath = await this.writeGeneratedFile(
-          joinPath(this.settings.articlesFolder, `${articleTitle}.md`),
-          articleNote
-        );
+        const articleTarget = joinPath(this.settings.articlesFolder, `${articleTitle}.md`);
+        const articleValidation = this.validateContent(articleNote);
+        if (!articleValidation.valid) {
+          throw new Error(`Generated article note failed validation: ${articleValidation.reason}`);
+        }
+        const articlePath = await this.writeGeneratedFile(articleTarget, articleNote);
 
         const generatedConceptPaths = [];
         for (const rawConcept of result.concept_notes || []) {
@@ -1411,10 +1483,14 @@ class SecondBrainPipelinePlugin extends Plugin {
             sourcePath: file.path,
             knownConceptTitles,
           });
-          const conceptPath = await this.writeGeneratedFile(
-            joinPath(this.settings.conceptsFolder, `${concept.title}.md`),
-            conceptBody
-          );
+          const conceptPath = await this.resolveWritableGeneratedPath(joinPath(this.settings.conceptsFolder, `${concept.title}.md`));
+          const validation = this.validateContent(conceptBody);
+          if (!validation.valid) {
+            console.warn(`[second-brain-pipeline] Validation failed for concept ${concept.title}: ${validation.reason}. Skipping write.`);
+            new Notice(`Concept ${concept.title} validation failed: ${validation.reason}`);
+            continue;
+          }
+          await this.writeText(conceptPath, conceptBody);
           generatedConceptPaths.push(conceptPath);
           conceptCount += 1;
         }
@@ -1902,6 +1978,75 @@ class SecondBrainPipelinePlugin extends Plugin {
       `Pipeline complete. raw=${phase1.rawCount}, staged=${phase1.stagedCount}, compiled=${phase2.compiledCount}, unchanged=${phase2.unchangedCount || 0}, queuedQueries=${queued.processedCount}, lintIssues=${phase4.issueCount}`,
       12000
     );
+
+    // Auto-fix broken links after pipeline if there are issues
+    if (phase4.issueCount > 0) {
+      new Notice("Broken links detected. Running auto-fix...", 5000);
+      await this.runLinkAutoFix({ silent: true });
+    }
+  }
+
+  async runLinkAutoFix(options = {}) {
+    const silent = Boolean(options.silent);
+    const wikiFiles = this.getAllFilesUnder(this.settings.wikiFolder)
+      .filter((file) => file instanceof TFile && file.extension === "md");
+    
+    const filesWithContent = [];
+    for (const file of wikiFiles) {
+      filesWithContent.push({
+        file,
+        content: await this.app.vault.cachedRead(file),
+      });
+    }
+
+    const scan = this.buildLintScan(filesWithContent);
+    const brokenLinks = scan.brokenLinks || [];
+    if (!brokenLinks.length) {
+      if (!silent) new Notice("No broken links to fix.");
+      return;
+    }
+
+    const allNoteTitles = filesWithContent.map(i => stemname(i.file.path));
+    let fixCount = 0;
+
+    for (const link of brokenLinks) {
+      const targetName = basename(link.target).replace(".md", "");
+      let bestMatch = null;
+      let highestSimilarity = 0;
+
+      for (const title of allNoteTitles) {
+        const sim = this.calculateSimilarity(targetName, title);
+        if (sim > highestSimilarity) {
+          highestSimilarity = sim;
+          bestMatch = title;
+        }
+      }
+
+      if (bestMatch && highestSimilarity > 0.8) {
+        const file = this.app.vault.getAbstractFileByPath(link.path);
+        if (file instanceof TFile) {
+          const content = await this.app.vault.cachedRead(file);
+          const regex = new RegExp(`\\[\\[${link.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\|[^\\]]+)?\\]\\]`, 'g');
+          const newContent = content.replace(regex, (match, alias) => {
+            const matchedFile = wikiFiles.find(f => stemname(f.path) === bestMatch);
+            if (matchedFile) {
+              const newPath = notePathFromFilePath(matchedFile.path);
+              return alias ? `[[${newPath}${alias}]]` : `[[${newPath}]]`;
+            }
+            return match;
+          });
+
+          if (newContent !== content) {
+            await this.app.vault.modify(file, newContent);
+            fixCount += 1;
+          }
+        }
+      }
+    }
+
+    if (!silent || fixCount > 0) {
+      new Notice(`Auto-fix complete. Repaired ${fixCount} links.`, 8000);
+    }
   }
 }
 

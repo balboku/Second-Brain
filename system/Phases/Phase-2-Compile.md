@@ -37,9 +37,10 @@ raw/ --> LLM 讀取 --> 結構化維基 --> wiki/
    - 從 raw/ 取文件放入 staging/
 
 2. **執行編譯**
-   - 提示 LLM 讀取 staging/ 中的文件
-   - 要求生成結構化摘要與概念文章
-   - 指定輸出至對應目錄
+   - 提示 LLM 讀取 staging/ 中的文件。
+   - **參考 `system/glossary.json`**：強制 LLM 在生成 [[連結]] 時必須遵守術語規範，避免命名衝突（如 Breast Surgery vs Mastectomy）。
+   - 要求生成結構化摘要與概念文章。
+   - 指定輸出至對應目錄（建議先輸出至 `staging/temp/` 進行驗證）。
 
 3. **更新索引**
    - 自動更新 `wiki/全域索引.md`
