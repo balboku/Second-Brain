@@ -423,7 +423,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     this.addCommand({
       id: "run-phase-4-lint",
       name: "Second Brain Pipeline: Run Phase 4 lint",
-      callback: () => this.runSafely(() => this.runPhase4()),
+      callback: () => this.runSafely(() => this.runPhase4Loop()),
     });
 
     this.addCommand({
@@ -2128,10 +2128,14 @@ class SecondBrainPipelinePlugin extends Plugin {
             "",
           ].join("\n");
           try {
-            await this.app.vault.create(stubPath, stubContent);
+            const newFile = await this.app.vault.create(stubPath, stubContent);
             resolvedStem = targetStem;
             stemMap.set(targetStem.toLowerCase(), targetStem);
             logs.push(`- 🆕 **建立存根**: \`${stubPath}\``);
+            
+            // Immediately register the new stub payload so that the SAME Phase 4 pass 
+            // can detect it as a stub and queue it for Phase 2!
+            filesWithContent.push({ file: newFile, content: stubContent });
           } catch (e) {
             logs.push(`- ❌ **建立存根失敗**: \`${stubPath}\` (${e.message})`);
             continue;
@@ -2204,6 +2208,44 @@ class SecondBrainPipelinePlugin extends Plugin {
       logs.push(`- 🔗 **新增連結**: \`${fromPath}\` -> \`${toStem}\``);
     }
     return logs;
+  }
+
+  async runPhase4Loop(options = {}) {
+    let iterations = 0;
+    const MAX_ITERATIONS = 4;
+    let lastResult = null;
+    
+    while (iterations < MAX_ITERATIONS) {
+      iterations++;
+      this.updateStatus("⚖️ Phase 4 Loop", `Starting iteration ${iterations}...`);
+      
+      try {
+        lastResult = await this.runPhase4(options);
+      } catch (err) {
+        if (!options.silent) {
+           new Notice(`⚠️ Auto-Fix Loop 遭遇 API 限制或連線錯誤: ${err.message}。等待 30 秒後重試...`, 10000);
+        }
+        await sleep(30000);
+        continue;
+      }
+      
+      if (!this.settings.enableAutoFix) {
+        break;
+      }
+      if (lastResult.issueCount === 0) {
+        if (!options.silent) {
+           new Notice(`✨ Auto-Fix Loop complete: Fully resolved in ${iterations} iterations!`);
+        }
+        break;
+      }
+      if (iterations === MAX_ITERATIONS) {
+         if (!options.silent) {
+            new Notice(`⚠️ Auto-Fix Loop reached max ${MAX_ITERATIONS} iterations with ${lastResult.issueCount} remaining issues.`);
+         }
+      }
+    }
+    this.clearStatus();
+    return lastResult;
   }
 
   async runPhase4(options = {}) {
@@ -2441,18 +2483,17 @@ class SecondBrainPipelinePlugin extends Plugin {
     }
 
     if (this.settings.enableAutoFix && forcedConcepts.length > 0 && sourcesToInvalidate.size > 0) {
-      new Notice(`Scheduling Phase 2 to automatically expand stubs...`);
-      setTimeout(async () => {
-         try {
-           const res = await this.runPhase2({ silent: true, forcedConcepts });
-           if (res && res.compiledCount > 0) {
-             new Notice(`✅ Phase 2 背景自動擴充存根完成！成功重編 ${res.compiledCount} 份文檔。`);
-           }
-         } catch (e) {
-           new Notice(`❌ Phase 2 背景擴充失敗: ${e.message}`, 10000);
-           console.error("Phase 2 auto-expand error:", e);
-         }
-      }, 3000);
+      if (!silent) new Notice(`執行 Phase 2 自動同步擴充存根... (需時較長)`);
+      this.updateStatus("⚖️ Phase 4: Maintenance", "同步擴充存根中...");
+      try {
+        const res = await this.runPhase2({ silent: true, forcedConcepts });
+        if (res && res.compiledCount > 0 && !silent) {
+          new Notice(`✅ Phase 2 自動擴充完成！成功重編 ${res.compiledCount} 份文檔。`);
+        }
+      } catch (e) {
+        if (!silent) new Notice(`❌ Phase 2 擴充失敗: ${e.message}`, 10000);
+        console.error("Phase 2 auto-expand error:", e);
+      }
     }
 
     return {
@@ -2467,7 +2508,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     const phase1 = await this.runPhase1({ silent: true });
     const phase2 = await this.runPhase2({ silent: true });
     const queued = await this.runQueuedQueries({ silent: true });
-    const phase4 = await this.runPhase4({ silent: true });
+    const phase4 = await this.runPhase4Loop({ silent: true });
 
     this.clearStatus("✅ Pipeline Complete");
     new Notice(
