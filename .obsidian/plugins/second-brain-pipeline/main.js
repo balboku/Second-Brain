@@ -2172,8 +2172,16 @@ class SecondBrainPipelinePlugin extends Plugin {
       }
     }
 
-    // Build final scan (reflects state AFTER auto-fix)
-    const scan = this.buildLintScan(filesWithContent);
+    // Build context for AI
+    const knownConceptTitles = filesWithContent
+      .filter((item) => item.file.path.startsWith(`${cleanPath(this.settings.conceptsFolder)}/`))
+      .map((item) => stemname(item.file.path));
+    const knownArticleTitles = filesWithContent
+      .filter((item) => item.file.path.startsWith(`${cleanPath(this.settings.articlesFolder)}/`))
+      .map((item) => stemname(item.file.path));
+
+    // Build final scan (reflects state AFTER first-pass auto-fix)
+    let scan = this.buildLintScan(filesWithContent);
     const workflowContext = await this.getWorkflowContext();
     const systemInstruction = [
       "You are the Phase 4 lint agent for an Obsidian knowledge base.",
@@ -2185,10 +2193,16 @@ class SecondBrainPipelinePlugin extends Plugin {
       "WORKFLOW DOCS",
       workflowContext,
       "",
+      "AVAILABLE CONCEPTS",
+      knownConceptTitles.join(", "),
+      "",
+      "AVAILABLE ARTICLES",
+      knownArticleTitles.join(", "),
+      "",
       "GLOSSARY MAPPINGS (Already Applied)",
       JSON.stringify((await this.readGlossary())?.mappings || {}, null, 2),
       "",
-      "SCAN RESULTS (post auto-fix — these are remaining issues only)",
+      "SCAN RESULTS (post first-pass auto-fix — these are remaining issues only)",
       JSON.stringify(scan, null, 2),
       "",
       "FILE SUMMARIES",
@@ -2203,16 +2217,36 @@ class SecondBrainPipelinePlugin extends Plugin {
       "3. Pay special attention to 'brokenLinks' in SCAN RESULTS. If a target is a long academic paper title or a non-standard name, identify the corresponding standard concept and suggest it in `new_glossary_mappings` (e.g., matching a long paper title to its core concept) so the system can autonomously fix it via these mappings.",
     ].join("\n");
     
-    this.updateStatus("⚖️ Phase 4: Maintenance", "正在產出報告...");
+    this.updateStatus("⚖️ Phase 4: Maintenance", "正在分析狀況並尋求優化方案...");
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, LINT_SCHEMA);
     
     // Merge new glossary mappings if any
-    if (result.new_glossary_mappings) {
+    if (result.new_glossary_mappings && result.new_glossary_mappings.length > 0) {
       await this.mergeGlossaryMappings(result.new_glossary_mappings);
+      
+      // --- Second-Pass Auto-Fix (Autonomous Fix based on AI suggestions) ---
+      if (this.settings.enableAutoFix) {
+        this.updateStatus("⚖️ Phase 4: Maintenance", "正在執行自主修復 (Second Pass)...");
+        const glossary = await this.readGlossary();
+        if (glossary && glossary.mappings) {
+          const secondPassGlossaryLogs = await this.deterministicApplyGlossaryMappings(filesWithContent, glossary.mappings);
+          autoFixLogs.push(...secondPassGlossaryLogs);
+        }
+        
+        // Re-scan and fix links again with new glossary
+        const interimScan = this.buildLintScan(filesWithContent);
+        const secondPassFixLogs = await this.deterministicFixBrokenLinks(interimScan.brokenLinks, filesWithContent);
+        autoFixLogs.push(...secondPassFixLogs);
+
+        // Re-read updated files again for final scan
+        for (const item of filesWithContent) {
+           try { item.content = await this.app.vault.cachedRead(item.file); } catch (_) {}
+        }
+      }
     }
-    const knownConceptTitles = filesWithContent
-      .filter((item) => item.file.path.startsWith(`${cleanPath(this.settings.conceptsFolder)}/`))
-      .map((item) => stemname(item.file.path));
+
+    // Final Scan for Report (reflects state AFTER second-pass)
+    scan = this.buildLintScan(filesWithContent);
 
     const autoFixSection = this.settings.enableAutoFix
       ? (autoFixLogs.length > 0 ? autoFixLogs.join("\n") : "- 沒有發現需要自動修復的項目。")
