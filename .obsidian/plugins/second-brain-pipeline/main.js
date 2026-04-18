@@ -1345,6 +1345,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "",
       "5. related_concepts should prefer titles from the existing concept list when relevant.",
       "6. Identify any synonymous or near-synonymous terms with standard concepts and suggest them in `new_glossary_mappings`.",
+      "7. CONSTRAINTS: Use the provided glossary for all [[wikilinks]] and #tags. If a glossary term has spaces, use hyphens '-' for tags (e.g., 'Breast Surgery' -> #Breast-Surgery).",
     ];
 
     const glossary = await this.readGlossary();
@@ -1933,25 +1934,42 @@ class SecondBrainPipelinePlugin extends Plugin {
       
       let content = item.content;
       let modified = false;
-
       for (const nonStandard of mappingKeys) {
         const standard = mappings[nonStandard];
-        
+
         // Match [[nonStandard]], [[nonStandard|alias]], [[path/to/nonStandard]], etc.
         const escapedNonStandard = nonStandard.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(
           `\\[\\[(?:[^\\]]*\/)?${escapedNonStandard}(\\|[^\\]]*)?\\]\\]`,
           'gi'
         );
-
-        const newContent = content.replace(regex, (match, alias) => {
+        const newContentLinks = content.replace(regex, (match, alias) => {
           // Keep the original alias if it exists, otherwise use standard name
           return alias ? `[[${standard}${alias}]]` : `[[${standard}]]`;
         });
 
-        if (newContent !== content) {
-          content = newContent;
+        if (newContentLinks !== content) {
+          content = newContentLinks;
           modified = true;
+        }
+
+        // --- Tag Replacement ---
+        // Obsidian tags don't allow spaces. We check for hyphen and underscore variants.
+        const tagStandard = standard.replace(/\s+/g, '-');
+        const nonStandardHyphen = nonStandard.replace(/\s+/g, '-');
+        const nonStandardUnderscore = nonStandard.replace(/\s+/g, '_');
+
+        const tagVariants = Array.from(new Set([nonStandardHyphen, nonStandardUnderscore]));
+        for (const variant of tagVariants) {
+          const escapedVariant = variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          // Match #tag but not ##tag, and ensure it's not immediately followed by more tag characters
+          const tagRegex = new RegExp(`(^|\\s)#${escapedVariant}(?![\\w\\/-])`, 'gi');
+          
+          const newContentTags = content.replace(tagRegex, `$1#${tagStandard}`);
+          if (newContentTags !== content) {
+            content = newContentTags;
+            modified = true;
+          }
         }
       }
 
