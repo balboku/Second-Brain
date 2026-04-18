@@ -2238,8 +2238,10 @@ class SecondBrainPipelinePlugin extends Plugin {
       "",
       "TASK",
       "1. Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
-      "2. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
-      "3. Pay special attention to 'brokenLinks' in SCAN RESULTS. If a target is a long academic paper title or a non-standard name, identify the corresponding standard concept and suggest it in `new_glossary_mappings` (e.g., matching a long paper title to its core concept) so the system can autonomously fix it via these mappings.",
+      "2. MANDATORY REPAIR PROTOCOL: For every issue in `brokenLinks` that corresponds to a long academic paper title or a non-standard name, you MUST identify the correct target from AVAILABLE CONCEPTS or AVAILABLE ARTICLES and suggest it in `new_glossary_mappings`.",
+      "   - EXAMPLE: If `brokenLinks` has `target: 'Reinforced stapler versus ultrasonic dissector...'`, and `AVAILABLE CONCEPTS` has `強化釘合器`, you MUST return a mapping: `{\"non_standard\": \"Reinforced stapler versus ultrasonic dissector...\", \"standard\": \"強化釘合器\"}`.",
+      "   - This is the ONLY way the system can fix the issues autonomously. DO NOT just describe the fix in text; perform it via data.",
+      "3. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
     ].join("\n");
     
     this.updateStatus("⚖️ Phase 4: Maintenance", "正在分析狀況並尋求優化方案...");
