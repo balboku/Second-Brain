@@ -1,66 +1,57 @@
+# LLM 知識庫系統：技術架構與邏輯
+
+這份文件詳細說明了 Second Brain 系統的底層運作邏輯，供技術開發與進階調整參考。
+
+## ⚙️ 技術堆疊
+
+- **核心載體**：Obsidian (Markdown Filesystem)
+- **邏輯引擎**：Second Brain Pipeline (TypeScript/JavaScript Plugin)
+- **推理端點**：Gemini API (3.1 Pro / Flash)
+- **語意搜尋**：Gemini Embedding 向量化技術
+- **檔案處理**：Gemini File API (支援 PDF/Video)
+
+## 🔄 四大核心階段與閉環
+
+### Phase 1: Ingest (攝取)
+將來自不同來源的 Raw Data 進行分類與標準化。PDF 會在此階段被標記，待 Phase 2 直接透過 API 並發處理。
+
+### Phase 2: Compile (編譯)
+這是「編譯器」的心臟。
+- **用語注入**：在產出 [[WikiLink]] 前，系統會先注入現有的 `glossary.json` 對位表。
+- **自動學習**：AI 會在理解內文時歸納出潛在的同義詞，並回傳至外掛進行字典合併。
+
+### Phase 3: Query (查詢增強)
+使用 RAG (Retrieval-Augmented Generation) 技術。
+- **向量匹配**：將使用者的問題透過 `Gemini Embedding` 轉化為向量，與全 Wiki 庫進行相似度匹配。
+- **上下文拼接**：將匹配到的最相關段落餵給 LLM 進行最後的精細回答。
+
+### Phase 4: Lint (檢修)
+維持知識庫的高熵減。
+- **確定性腳本**：採用對位 Regex 腳本直接修正檔案中的術語與路徑，確保 100% 準確率。
+- **存根修復**：自動發現 404 連結並建立 Markdown 存根页。
+
+## 📊 資料流向圖
+
+```mermaid
+graph TD
+    A[Input: PDF/Text] -->|Phase 1| B(staging/)
+    B -->|Phase 2| C{AI 編譯器}
+    C -->|重構| D[wiki/articles]
+    C -->|提煉| E[wiki/概念]
+    C -->|詞彙建議| F[glossary.json]
+    
+    G[User Query] -->|Phase 3| H{向量檢索}
+    H -->|檢索| E
+    H -->|回答| I[queries/答案]
+    
+    J[wiki/修正] -->|Phase 4| K{自動修復腳本}
+    K -->|詞彙對位| E
+    K -->|連結替換| D
+```
+
+## 🔐 隱私與安全性
+- **本地端優先**：所有原始資料保持在您的磁碟中，只有在「編譯」與「查詢」時才會將必要片段加密傳送至 Gemini API。
+- **不洩漏字典**：您的自訂術語與流程規則僅存在於 `system/` 中，外掛設計已確保不將機密設定寫入公開 Wiki。
+
 ---
-title: LLM 知識庫系統
-description: 基於 Karpathy 架構的個人知識庫系統
-type: reference
----
-
-# LLM 知識庫系統
-
-一個由 LLM 作為編譯器的結構化維基系統，無需向量資料庫或嵌入技術。
-
-## 系統架構
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Phase 1   │ --> │   Phase 2   │ --> │   Phase 3   │ --> │   Phase 4   │
-│   Ingest    │     │  Compile    │     │ Query&Enhance│     │   Lint      │
-│   攝取       │     │   編譯       │     │   查詢增強   │     │   檢查      │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │                   │
-       ▼                   ▼                   ▼                   ▼
-    raw/              wiki/              Obsidian IDE         一致性掃描
-  原始文件             結構化維基           Q&A 查詢              連接建議
-```
-
-## 目錄結構
-
-```
-├── raw/                    # 原始文件存放（攝取階段）
-├── staging/                # 暫存處理中文件
-├── system/                 # 流程規範、核心說明、操作文件
-│   ├── Phases/             # Phase 1-4 操作指南
-│   ├── lint/               # 系統檢查清單與維護規範
-│   ├── index/              # 操作索引與待處理清單
-│   └── queue/              # 批次查詢佇列
-├── wiki/                   # 最終知識產出
-│   ├── 概念/               # 概念文章（~100篇）
-│   ├── articles/           # 原始文章整理結果
-│   ├── 全域索引.md         # 知識庫入口索引
-│   ├── queries/            # Q&A 最終輸出
-│   ├── slides/             # Marp 簡報
-│   ├── charts/             # 圖表
-│   └── lint/               # 檢查報告
-└── Attachment/             # 附件
-```
-
-## 四個階段
-
-| 階段 | 功能 | 關鍵產出 |
-|------|------|----------|
-| Phase 1 | 攝取 | raw/ 中的原始文件 |
-| Phase 2 | 編譯 | 結構化維基、概念文章 |
-| Phase 3 | 查詢 | 問答結果、可視化 |
-| Phase 4 | 檢查 | 一致性報告、連接建議 |
-
-## 開始使用
-
-1. 將文件放入 `raw/` 目錄
-2. 參閱各 Phase 的操作指南
-3. 使用 Obsidian 開啟此資料夾作為 vault
-4. 將 `system/` 視為流程與規範區，將 `wiki/` 視為最終結果區
-
-詳見各 Phase 文件：
-- [Phase 1: 攝取](./Phases/Phase-1-Ingest.md)
-- [Phase 2: 編譯](./Phases/Phase-2-Compile.md)
-- [Phase 3: 查詢增強](./Phases/Phase-3-Query-Enhance.md)
-- [Phase 4: 檢查維護](./Phases/Phase-4-Lint.md)
+*Created by balboku | Updated at 2026-04-18*

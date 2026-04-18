@@ -93,8 +93,19 @@ const COMPILE_SCHEMA = {
         required: ["title", "summary", "body", "related_concepts", "tags"],
       },
     },
+    new_glossary_mappings: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          non_standard: { type: "string", description: "The incorrect, alternate, or foreign term encountered in the text." },
+          standard: { type: "string", description: "The standardized central concept name." }
+        },
+        required: ["non_standard", "standard"]
+      }
+    }
   },
-  required: ["article_title", "article_summary", "concept_notes"],
+  required: ["article_title", "article_summary", "concept_notes", "new_glossary_mappings"],
 };
 
 const QUERY_SCHEMA = {
@@ -146,8 +157,19 @@ const LINT_SCHEMA = {
         required: ["from", "to", "rationale"],
       },
     },
+    new_glossary_mappings: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          non_standard: { type: "string", description: "The incorrect, alternate, or foreign term encountered." },
+          standard: { type: "string", description: "The standardized central concept name." }
+        },
+        required: ["non_standard", "standard"]
+      }
+    }
   },
-  required: ["overview", "issues", "new_connections"],
+  required: ["overview", "issues", "new_connections", "new_glossary_mappings"],
 };
 
 function cleanPath(value) {
@@ -480,6 +502,33 @@ class SecondBrainPipelinePlugin extends Plugin {
     } catch (e) {
       console.warn("[second-brain-pipeline] Failed to parse glossary.json:", e);
       return null;
+    }
+  }
+
+  async writeGlossary(glossaryObj) {
+    const glossaryPath = "system/glossary.json";
+    await this.writeGeneratedFile(glossaryPath, JSON.stringify(glossaryObj, null, 2));
+  }
+
+  async mergeGlossaryMappings(newMappings) {
+    if (!newMappings || newMappings.length === 0) return;
+    const glossary = (await this.readGlossary()) || { mappings: {} };
+    if (!glossary.mappings) glossary.mappings = {};
+
+    let addedCount = 0;
+    for (const item of newMappings) {
+      if (item.non_standard && item.standard) {
+        // Only add if not already present with same standard
+        if (glossary.mappings[item.non_standard] !== item.standard) {
+          glossary.mappings[item.non_standard] = item.standard;
+          addedCount++;
+        }
+      }
+    }
+
+    if (addedCount > 0) {
+      await this.writeGlossary(glossary);
+      new Notice(`Glossary updated: added ${addedCount} new mappings.`);
     }
   }
 
@@ -1294,13 +1343,16 @@ class SecondBrainPipelinePlugin extends Plugin {
       "SOURCE FILE PATH",
       file.path,
       "",
-      "TASK",
-      "1. Create a concise article title and article summary in Traditional Chinese.",
-      "2. Extract 1-3 durable concept notes.",
-      "3. Concept note titles, summaries, bodies, and tags must be in Traditional Chinese unless a standard name should remain original.",
-      "4. Concept note body must be markdown and may use Obsidian wikilinks.",
       "5. related_concepts should prefer titles from the existing concept list when relevant.",
-    ].join("\n");
+      "6. Identify any synonymous or near-synonymous terms with standard concepts and suggest them in `new_glossary_mappings`.",
+    ];
+
+    const glossary = await this.readGlossary();
+    if (glossary && glossary.mappings) {
+      intro.push("", "GLOSSARY MAPPINGS (Preferred terminology)", JSON.stringify(glossary.mappings, null, 2));
+    }
+
+    const introText = intro.join("\n");
 
     if (preparedSource.sourceKind === "pdf" && uploadedFile) {
       return {
@@ -1308,7 +1360,7 @@ class SecondBrainPipelinePlugin extends Plugin {
         sourceKind: "pdf",
         sourceText: "",
         userParts: [
-          { text: intro },
+          { text: introText },
           {
             fileData: {
               mimeType: this.getMimeType(file.extension),
@@ -1332,7 +1384,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       userParts: [
         {
           text: [
-            intro,
+            introText,
             "",
             "SOURCE CONTENT",
             truncateText(sourceText, this.settings.maxContextChars),
@@ -1454,6 +1506,11 @@ class SecondBrainPipelinePlugin extends Plugin {
           compileRequest.userParts,
           COMPILE_SCHEMA
         );
+
+        // Merge new glossary mappings if any
+        if (result.new_glossary_mappings) {
+          await this.mergeGlossaryMappings(result.new_glossary_mappings);
+        }
         const articleTitle = sanitizeFileName(result.article_title || stemname(file.path));
         const conceptTitles = (result.concept_notes || []).map((item) => sanitizeFileName(item.title)).filter(Boolean);
         const knownConceptTitles = Array.from(new Set([...existingConceptTitles, ...conceptTitles]));
@@ -1860,6 +1917,52 @@ class SecondBrainPipelinePlugin extends Plugin {
       missingFrontmatter,
     };
   }
+
+  /**
+   * Deterministically apply glossary mappings to all files.
+   * Finds wikilinks to non-standard terms and replaces them with standard ones.
+   */
+  async deterministicApplyGlossaryMappings(allFilesWithContent, mappings) {
+    const logs = [];
+    if (!mappings || Object.keys(mappings).length === 0) return logs;
+
+    const mappingKeys = Object.keys(mappings);
+
+    for (const item of allFilesWithContent) {
+      if (item.file.path.includes("/lint/")) continue;
+      
+      let content = item.content;
+      let modified = false;
+
+      for (const nonStandard of mappingKeys) {
+        const standard = mappings[nonStandard];
+        
+        // Match [[nonStandard]], [[nonStandard|alias]], [[path/to/nonStandard]], etc.
+        const escapedNonStandard = nonStandard.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(
+          `\\[\\[(?:[^\\]]*\/)?${escapedNonStandard}(\\|[^\\]]*)?\\]\\]`,
+          'gi'
+        );
+
+        const newContent = content.replace(regex, (match, alias) => {
+          // Keep the original alias if it exists, otherwise use standard name
+          return alias ? `[[${standard}${alias}]]` : `[[${standard}]]`;
+        });
+
+        if (newContent !== content) {
+          content = newContent;
+          modified = true;
+        }
+      }
+
+      if (modified) {
+        await this.app.vault.modify(item.file, content);
+        item.content = content; // Update in-memory for next steps
+        logs.push(`- 🏷️ **用語統一**: \`${item.file.path}\` (已對位至標準詞彙)`);
+      }
+    }
+    return logs;
+  }
   /**
    * Deterministic broken-link auto-fixer.
    * For each broken link it tries, in order:
@@ -1986,7 +2089,16 @@ class SecondBrainPipelinePlugin extends Plugin {
     // --- Deterministic Auto-Fix FIRST (no AI, no backup) ---
     const autoFixLogs = [];
     if (this.settings.enableAutoFix) {
-      new Notice("Phase 4: 正在執行自動連結修復...", 4000);
+      new Notice("Phase 4: 正在執行自動連結修復與用語對位...", 4000);
+      
+      // 1. Apply Glossary Mappings first
+      const glossary = await this.readGlossary();
+      if (glossary && glossary.mappings) {
+        const glossaryLogs = await this.deterministicApplyGlossaryMappings(filesWithContent, glossary.mappings);
+        autoFixLogs.push(...glossaryLogs);
+      }
+
+      // 2. Fix Broken Links second
       const preScan = this.buildLintScan(filesWithContent);
       const fixLogs = await this.deterministicFixBrokenLinks(preScan.brokenLinks, filesWithContent);
       autoFixLogs.push(...fixLogs);
@@ -2017,6 +2129,9 @@ class SecondBrainPipelinePlugin extends Plugin {
       "WORKFLOW DOCS",
       workflowContext,
       "",
+      "GLOSSARY MAPPINGS (Already Applied)",
+      JSON.stringify((await this.readGlossary())?.mappings || {}, null, 2),
+      "",
       "SCAN RESULTS (post auto-fix — these are remaining issues only)",
       JSON.stringify(scan, null, 2),
       "",
@@ -2027,10 +2142,16 @@ class SecondBrainPipelinePlugin extends Plugin {
         .join("\n\n---\n\n"),
       "",
       "TASK",
-      "Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
+      "1. Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
+      "2. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
     ].join("\n");
 
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, LINT_SCHEMA);
+    
+    // Merge new glossary mappings if any
+    if (result.new_glossary_mappings) {
+      await this.mergeGlossaryMappings(result.new_glossary_mappings);
+    }
     const knownConceptTitles = filesWithContent
       .filter((item) => item.file.path.startsWith(`${cleanPath(this.settings.conceptsFolder)}/`))
       .map((item) => stemname(item.file.path));
