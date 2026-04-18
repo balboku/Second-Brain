@@ -1,5 +1,5 @@
 {
-  "geminiApiKey": "AIzaSyDgAj5uo87KW7uKoWtZWTrQ2A49_XDJ3bM",
+  "geminiApiKey": "AIzaSyBd1FVDCCyNhu1V_3qM6Z3Ds6TdlKhwiZw",
   "geminiModel": "gemma-4-31b-it",
   "geminiEmbeddingModel": "gemini-embedding-2-preview",
   "temperature": 0.2,
@@ -36,23 +36,24 @@
       "fingerprint": "pdf:2fd4adb79a1e4e1e1322a4c84d6dca6e840250e8afe49c46b2391aa2237a320f",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中超音波刀與單極電燒之臨床比較研究.md",
+      "articlePath": "wiki/articles/A Clinical Study to Evaluate Ultrasonic Verses Monopolar Electrocautery Dissection of Gall Bladder in Laparoscopic Chole.md",
       "conceptPaths": [
-        "wiki/概念/腹腔鏡膽囊切除術.md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/Harmonic Ace curved shears.md",
+        "wiki/概念/單極電燒在腹腔鏡膽囊切除術中的風險.md"
       ],
-      "updatedAt": "2026-04-13T06:55:47.087Z"
+      "updatedAt": "2026-04-18T05:56:06.425Z"
     },
     "raw/ST2-E11_Ulla  2024_Harmonic Ace curved shears.pdf": {
       "fingerprint": "pdf:4c10a231d47fd71b3c2b8fe0d221634ff3a3d830e10ff3e46febac4379b2f249",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中單極電燒與超音波刀之比較研究.md",
+      "articlePath": "wiki/articles/Study to Compare Monopolar Electrocautery Versus Ultrasonic Dissection of Gall Bladder in Laparoscopic Cholecystectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/Harmonic Ace curved shears.md"
       ],
-      "updatedAt": "2026-04-13T06:57:34.965Z"
+      "updatedAt": "2026-04-18T05:55:13.200Z"
     },
     "staging/desktop.ini": {
       "fingerprint": "text:80cc0a62e6f5bf0eea66c5a9c0522ee68afbefafabd641e7df4d9d14e32143bd",
@@ -68,223 +69,229 @@
       "fingerprint": "pdf:54531cd47d8c2766805859d055e4dcdcb774233d21d172baa09ebaf2fb6cdc6e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/成人扁桃腺切除術之比較研究：超音波刀與傳統手術.md",
+      "articlePath": "wiki/articles/Comparative study of adult tonsillectomy in two methods harmonic scalpel and classical surgery.md",
       "conceptPaths": [
-        "wiki/概念/扁桃腺切除術.md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/超音波手術刀在扁桃腺切除術的應用.md",
+        "wiki/概念/冷切除術 (Cold Dissection).md"
       ],
-      "updatedAt": "2026-04-13T06:58:03.260Z"
+      "updatedAt": "2026-04-18T06:00:35.175Z"
     },
     "raw/ST2-E05_Kuntaraksa N 2025_Harmonic Focus Shear.pdf": {
       "fingerprint": "pdf:897b10f14436b49077de2f183707c3a4a86c03817ba98c5626fc29fbdd612afe",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/結合皮瓣固定與超音波刀技術對乳癌手術後漿液腫形成的影響：隨機對照試驗.md",
+      "articlePath": "wiki/articles/Comparing the Combined Flap Fixation and Harmonic Scalpel Technique with the Harmonic Scalpel Technique Alone in Reducin.md",
       "conceptPaths": [
-        "wiki/概念/漿液腫.md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/皮瓣固定 (Flap Fixation).md",
+        "wiki/概念/超音波手術刀在乳癌手術中的應用 (更新).md",
+        "wiki/概念/漿液腫的分級 (Seroma Grading).md"
       ],
-      "updatedAt": "2026-04-13T06:58:46.253Z"
+      "updatedAt": "2026-04-18T06:03:04.387Z"
     },
     "raw/ST2-E12_Jain S 2024_harmonic scalpel.pdf": {
       "fingerprint": "pdf:e238ece55934187e9583375aafdfa4549d76275609881efa7766aaae73c13db2",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與傳統電燒痔瘡切除術之隨機對照試驗.md",
+      "articlePath": "wiki/articles/Randomized Trial to Compare Hemorrhoidectomy Performed Using Harmonic Scalpel versus Conventional Electrocautery.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
+        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md",
+        "wiki/概念/Milligan-Morgan 痔瘡切除術.md",
         "wiki/概念/痔瘡切除術.md"
       ],
-      "updatedAt": "2026-04-13T06:59:44.445Z"
+      "updatedAt": "2026-04-18T06:01:23.723Z"
     },
     "raw/ST2-E09_Moaiery H 2024_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:349c3cb8eb564577b6c0ae1dd85d57ec22a13a7f7b0a40f5b02e491ac9812556",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與電燒刀在 Mastectomy 中的比較研究.md",
+      "articlePath": "wiki/articles/Comparison of Harmonic Scalpel and Electrocautery During Breast Surgery A Cohort Study.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在乳癌手術中的應用.md",
+        "wiki/概念/超音波手術刀的工作原理 (補充).md"
       ],
-      "updatedAt": "2026-04-13T06:58:15.656Z"
+      "updatedAt": "2026-04-18T06:02:04.891Z"
     },
     "raw/ST2-E67_Shahid N 2017_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:a50fe90dd6382f82f46fe464b63320fdae90d35e9b761005e3184b173d18721c",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/甲狀腺切除術中超音波刀與傳統止血技術之比較.md",
+      "articlePath": "wiki/articles/Comparison between conventional and harmonic techniques in bleeding control during Thyroidectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/Thyroidectomy.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/Thyroidectomy 出血控制.md"
       ],
-      "updatedAt": "2026-04-13T06:59:57.893Z"
+      "updatedAt": "2026-04-18T05:25:35.904Z"
     },
     "raw/ST2-E51_Awale L 2019_ultracision harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:67649abf348bc0df2bf19762be2b5a1d23b89b5372cdeb2975c1153432d472db",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/無夾式腹腔鏡膽囊切除術：超音波刀與傳統方法的比較.md",
+      "articlePath": "wiki/articles/Clipless Laparoscopic Cholecystectomy Ultrasonic Dissection vs Conventional Method.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/無夾縫合腹腔鏡膽囊切除術.md",
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:00:11.172Z"
+      "updatedAt": "2026-04-18T05:48:53.197Z"
     },
     "raw/ST2-E85_Aziz W 2016_Harmonic Ace(Ethicon).pdf": {
       "fingerprint": "pdf:a03034e82f8ddd362e9e3388882cd5305629463ac169e6c42a797aa6ef7cdc78",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與傳統結紮法在甲狀腺切除術之隨機對照試驗比較.md",
+      "articlePath": "wiki/articles/Suture-less Thyroidectomy Using Harmonic Scalpel versus Conventional Thyroidectomy A Randomized Controlled Trial.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/Thyroidectomy.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/無縫線甲狀腺切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:00:58.178Z"
+      "updatedAt": "2026-04-18T05:18:52.506Z"
     },
     "raw/ST2-E46_Hussein K.K. 2020_Harmonic_Scalpel.pdf": {
       "fingerprint": "pdf:d8581b5681857b2afd6595ebafa4dbc2239ed47e50bb167a145716a6e703f6a4",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與傳統電燒在痔瘡切除術之比較.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel Vs Conventional Cautery Use In Hemorrhoidectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
+        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md",
+        "wiki/概念/側向熱損傷.md",
         "wiki/概念/痔瘡切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:00:40.565Z"
+      "updatedAt": "2026-04-18T05:31:34.215Z"
     },
     "raw/ST2-E39_Krishna P 2021_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:5f1f75b995e3008a2d194afe08471ad4da64f98de0ad2a316710ed5623540c3e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀在腹腔鏡膽囊切除術中的應用：前瞻性隨機對照試驗.md",
+      "articlePath": "wiki/articles/A Prospective Randomized Control Trial to Assess the Efficacy of Ultrasonic Dissection without Cystic Artery Clipping Ve.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/超音波剝離 (Ultrasonic Dissection).md"
       ],
-      "updatedAt": "2026-04-13T07:01:10.935Z"
+      "updatedAt": "2026-04-18T05:49:38.345Z"
     },
     "raw/ST2-E66_Wu T 2018_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:6571637b439a1baa0a7668ec55afdcc09d0f25d7e5116544e365231518903e54",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與電燒刀在乳癌腋下淋巴結廓清術之治療效果比較.md",
+      "articlePath": "wiki/articles/Therapeutic effect of harmonic scalpel versus electrocautery in axillary dissection of breast cancer.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腋下淋巴結廓清術.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/腋下淋巴結廓清術的術後管理.md",
+        "wiki/概念/超音波手術刀 vs 電燒 (止血效果比較).md"
       ],
-      "updatedAt": "2026-04-13T07:06:46.879Z"
+      "updatedAt": "2026-04-18T05:26:32.669Z"
     },
     "raw/ST2-E25_Bharti S. 2023_Harmonic Ace curved shears (Ethicon).pdf": {
       "fingerprint": "pdf:7731328ce6d6c6a615aa669ecb95a28627e6a121316cb51468307559e9337ea6",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中超音波刀與單極電燒之比較研究.md",
+      "articlePath": "wiki/articles/A Prospective Randomized Controlled Trial Evaluating Ultrasonic Verses Monopolar Electrocautery Dissection of Gall Bladd.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/單極電燒在膽囊切除術中的風險.md"
       ],
-      "updatedAt": "2026-04-13T07:03:50.428Z"
+      "updatedAt": "2026-04-18T05:54:33.148Z"
     },
     "raw/ST2-P20_Arora RD 2023_Scissor harmonic scalpe.pdf": {
       "fingerprint": "pdf:ff26070b732bfa9f7fc52909fd7fd6a4ccf50543586d29abb12d8cbc89e901e9",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與傳統手術在 Thyroidectomy 中的比較.md",
+      "articlePath": "wiki/articles/A Comparison of Harmonic Scalpel and Conventional Techniques for Thyroidectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/喉返神經損傷.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/反迴喉神經 (RLN) 麻痺.md"
       ],
-      "updatedAt": "2026-04-13T07:06:59.515Z"
+      "updatedAt": "2026-04-18T05:02:04.633Z"
     },
     "raw/ST2-E22_Hasabe R.A. 2023_harmonic scalpel.pdf": {
       "fingerprint": "pdf:1d1653bfc9cefebb42e15d533db3b25ff5bca26d40234ecff0a6bb833b2eebb3",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡全子宮切除術中雙極血管封合器與超音波刀之比較.md",
+      "articlePath": "wiki/articles/Comparison Between Bipolar Vessel Sealer (Liga Sure Vessel Sealer) and Harmonic Scalpel in Total Laparoscopic Hysterecto.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/雙極血管封合器.md"
+        "wiki/概念/全腹腔鏡子宮切除術中的能量設備比較.md",
+        "wiki/概念/雙極血管密封器 (Bipolar Vessel Sealer).md",
+        "wiki/概念/超音波手術刀在子宮切除術的應用.md",
+        "wiki/概念/全腹腔鏡子宮切除術 (TLH).md"
       ],
-      "updatedAt": "2026-04-13T07:07:14.747Z"
+      "updatedAt": "2026-04-18T05:58:04.717Z"
     },
     "raw/ST2-E63_Caliskan S 2018_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:6c5c0f02788110c90c6a86b8299c9ccfdb8ed0ac169e86290b613fd599f8687c",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用超音波刀進行腹腔鏡腎囊腫去頂減壓術之短期結果.md",
+      "articlePath": "wiki/articles/Short Term Results of Laparoscopic Decortication of Simple Renal Cysts using Harmonic Scalpel.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腎囊腫去頂減壓術.md"
+        "wiki/概念/腹腔鏡下腎囊腫除殼術.md",
+        "wiki/概念/Bosniak 分類.md"
       ],
-      "updatedAt": "2026-04-13T07:07:38.527Z"
+      "updatedAt": "2026-04-18T05:30:46.855Z"
     },
     "raw/ST2-E49_Shahmoradi M.K. 2020_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:3682e6a7599f64572f6ca16f4d362a693215624471715e42e6b6528fa29fd783",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用超音波刀與電燒刀進行痔瘡切除術之比較：隨機對照試驗.md",
+      "articlePath": "wiki/articles/Comparison of hemorrhoidectomy using harmonic scalpel and electrocautery A randomized controlled trial.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
+        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md",
         "wiki/概念/痔瘡切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:09:14.830Z"
+      "updatedAt": "2026-04-18T05:29:24.734Z"
     },
     "raw/ST2-E38_Li Y. 2021_ultrasonic knife (Beijing Anhe Jiali Technology, Model AH-631-L).pdf": {
       "fingerprint": "pdf:330f03a725e010f6990ace4f44e63ec28ed1b603f10e2dc0689e3a2ec754f894",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用超音波刀進行無結紮單側陰囊切口睪丸切除術：Xinhua Zhang 手術法.md",
+      "articlePath": "wiki/articles/Ligation-free single scrotal incision orchiectomy with ultrasonic scalpel Xinhua Zhang Procedure.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/睪丸切除術.md"
+        "wiki/概念/Xinhua Zhang Procedure.md",
+        "wiki/概念/睾丸切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:10:26.020Z"
+      "updatedAt": "2026-04-18T05:52:55.295Z"
     },
     "raw/ST2-E24_Dani S. 2023_harmonic scalpel.pdf": {
       "fingerprint": "pdf:0c1035b07b2ba6749951bbce39e15023cd4816ab72e04563227f3553320e9608",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/痔瘡切除術：傳統電燒與超音波刀之隨機對照試驗比較.md",
+      "articlePath": "wiki/articles/A Randomized Control Trial Comparing Surgical Haemorrhoidectomy and Harmonic Scalpel Haemorrhoidectomy in the Management.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/痔瘡切除術.md"
+        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md",
+        "wiki/概念/Milligan-Morgan 痔瘡切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:09:28.866Z"
+      "updatedAt": "2026-04-18T05:52:09.916Z"
     },
     "raw/ST2-E65_Ahmad D 2018_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:f78c0058e8d2e77dad3be066f822fe99d66f2c0d6faeaa973f5d664e5b11bb47",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與傳統止血法在 Thyroidectomy 中的比較研究.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel Compared to Conventional Homeostasis in Thyroid Surgery.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/Thyroidectomy.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/傳統止血法 (Conventional Homeostasis).md",
+        "wiki/概念/淋巴漏 (Lymphorrhea).md"
       ],
-      "updatedAt": "2026-04-13T07:12:11.177Z"
+      "updatedAt": "2026-04-18T05:28:43.447Z"
     },
     "raw/ST2-E21_Patel P.B. 2023_UltraCision Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:4666fd2afed260e3b68b4972927ceb5660924eb4867b828574b4c5c70a5e71b7",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/甲狀腺切除術中超音波刀與 LigaSure 的術後出血比較：15 年單中心回顧性研究.md",
+      "articlePath": "wiki/articles/Comparison of postoperative bleeding using harmonic scalpel and LigaSure in thyroid surgery a 15-year single-centre retr.md",
       "conceptPaths": [
-        "wiki/概念/Thyroidectomy.md",
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/喉返神經損傷.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/Thyroidectomy 術後出血.md"
       ],
-      "updatedAt": "2026-04-13T07:11:32.448Z"
+      "updatedAt": "2026-04-18T05:58:49.669Z"
     },
     "raw/ST2-E30_Zahid A. 2022_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:26a55218b23ae6cda027f143da0c54d7216e1366abbef554627ab7022db19a56",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與單極電燒在改良式乳房切除術後腋下淋巴結廓清術中對漿液腫形成之比較.md",
+      "articlePath": "wiki/articles/Comparison of Seroma Formation with Harmonic Scalpel Versus Monopolar Electrocautery in Axillary Dissection following Mo.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/單極電燒在乳房手術中的影響.md",
+        "wiki/概念/改良根除式乳房切除術 (MRM) 的術後管理.md"
       ],
-      "updatedAt": "2026-04-13T07:12:21.704Z"
+      "updatedAt": "2026-04-18T05:53:48.670Z"
     },
     "raw/ST2-E54_Jamil A 2019_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:6de72027c09c7c2a57e6997d5a98cbcc6c1c9c7fc5ebc0f85de46ab4c8abce7a",
@@ -301,226 +308,232 @@
       "fingerprint": "pdf:00d9c81959c54bf80a8926ca599347115e4d5970ecf8429ff0fbdca05a6d837e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/放大鏡與超音波刀在 Thyroidectomy 中的應用成效.md",
+      "articlePath": "wiki/articles/Does the Combined Use of Magnification Loupes and Harmonic FOCUS Improve the Outcome of Thyroid Surgery.md",
       "conceptPaths": [
-        "wiki/概念/Thyroidectomy.md",
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/喉返神經損傷.md"
+        "wiki/概念/放大鏡在甲狀腺手術中的應用.md",
+        "wiki/概念/Harmonic FOCUS 在甲狀腺手術中的成效.md",
+        "wiki/概念/甲狀腺切除術的併發症管理.md"
       ],
-      "updatedAt": "2026-04-13T07:12:34.611Z"
+      "updatedAt": "2026-04-18T05:50:29.271Z"
     },
     "raw/ST2-E17_Sai Manoj M 2023_UltraCision Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:4ded1d36f0338af1edc30a56903573b73fb006eb254b2dc49faacf3a9250e1f7",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與電燒在腹腔鏡膽囊切除術之比較研究.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel versus Electrocautery and its Outcome in Laparoscopic Cholecystectomy A Prospective Interventional Stud.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/共凝固與燒灼凝固之比較.md",
+        "wiki/概念/腹腔鏡膽囊切除術中的術後併發症管理.md"
       ],
-      "updatedAt": "2026-04-13T07:13:53.601Z"
+      "updatedAt": "2026-04-18T05:59:46.673Z"
     },
     "raw/ST2-E23_Akami K. 2023_Harmonic Ace curved shears (Ethicon).pdf": {
       "fingerprint": "pdf:0163cca5633b9e6e87c9d6dab0bca5cf140ecfbdd5830b69fd73f2e3671a3ab0",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中單極電燒與超音波刀之比較研究.md",
+      "articlePath": "wiki/articles/單極電燒與超音波手術刀在腹腔鏡膽囊切除術中膽囊床剝離的比較研究.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/膽囊穿孔 (Gallbladder Perforation).md",
+        "wiki/概念/單極電燒在膽囊切除術中的風險.md"
       ],
-      "updatedAt": "2026-04-13T07:13:34.143Z"
+      "updatedAt": "2026-04-18T05:57:02.826Z"
     },
     "raw/ST2-E27_Walia D.S 2022_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:be0814dd6413e2f31c15bb22f07c59dd1ebf424f09d968bfefd8331154e71b2e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/Milligan-Morgan 痔瘡切除術與超音波刀痔瘡切除術之比較研究.md",
+      "articlePath": "wiki/articles/Milligan Morgan 痔瘡切除術與超音波手術刀痔瘡切除術之比較研究.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/痔瘡切除術.md"
+        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md",
+        "wiki/概念/Milligan-Morgan 痔瘡切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:12:56.937Z"
+      "updatedAt": "2026-04-18T05:51:19.711Z"
     },
     "raw/ST2-E80_Shabbir A 2016_no device information.pdf": {
       "fingerprint": "pdf:d64327ffc1a481c9a8bb904bbe7c2ead20ee6733bb02725402fdf5e78ec906fa",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中單極電燒與超音波刀對膽囊穿孔率之比較.md",
+      "articlePath": "wiki/articles/Comparison of Gallbladder Perforation During Dissection From Liver Bed in Patients Undergoing Monopolar Electrocautery W.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/超音波手術刀在膽囊切除術的應用.md",
+        "wiki/概念/膽囊穿孔 (Gallbladder Perforation).md"
       ],
-      "updatedAt": "2026-04-13T07:16:09.940Z"
+      "updatedAt": "2026-04-18T05:24:56.018Z"
     },
     "raw/ST2-E87_Shoukat H 2016_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:046abc2c655cdc4e6f6be2072dd819cfb5acaeda4f3a0ae8dc0f5fb12acd10f7",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/痔瘡切除術：雙極電燒與超音波刀之比較.md",
+      "articlePath": "wiki/articles/Comparison of Hemorrhoidectomy Using Bipolar Diathermy Vs Harmonic Scalpel.md",
       "conceptPaths": [
+        "wiki/概念/痔瘡切除術中的能量設備比較.md",
+        "wiki/概念/痔瘡切除術.md",
         "wiki/概念/雙極電燒.md",
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/痔瘡切除術.md"
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-13T07:15:15.688Z"
+      "updatedAt": "2026-04-18T05:23:27.996Z"
     },
     "raw/ST2-E75_Karimi E 2017_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:9c1b4f43ca326459b439f1f43d1edce6b3949a9c10329496b160f65c59a9c7eb",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/冷刀切除術與超音波刀扁桃腺切除術之比較.md",
+      "articlePath": "wiki/articles/A Comparison between Cold Dissection Tonsillectomy and Harmonic Scalpel Tonsillectomy.md",
       "conceptPaths": [
-        "wiki/概念/扁桃腺切除術.md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/超音波手術刀在扁桃腺切除術的應用.md",
+        "wiki/概念/冷切除術 (Cold Dissection).md"
       ],
-      "updatedAt": "2026-04-13T07:13:43.056Z"
+      "updatedAt": "2026-04-18T05:27:13.887Z"
     },
     "raw/ST2-E86_Sarwar G 2016_Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:db499d6bc7615276f3a7de053f699526bbf62f1d21e513d880b4e8aa8d152dd9",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與單極電燒在改良式根治性乳房切除術中出血量的比較.md",
+      "articlePath": "wiki/articles/Comparison of Blood Loss between Harmonic Scalpel and Monopolar Electrocautry in Modified Radical Mastectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/Mastectomy.md"
+        "wiki/概念/超音波手術刀在改良根除式乳房切除術的應用.md",
+        "wiki/概念/改良根除式乳房切除術 (MRM) 的能量設備選擇.md"
       ],
-      "updatedAt": "2026-04-13T07:17:12.584Z"
+      "updatedAt": "2026-04-18T05:24:14.809Z"
     },
     "raw/ST2-E73_Kirmizi S 2017_Harmonic Ace(Ethicon).pdf": {
       "fingerprint": "pdf:92e5c393b63448311f524bd704774dc87a8c72d8940234cf91c1467dc501e0bb",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡 Roux-en-Y 胃繞道手術中超音波刀與雙極血管封合器的比較.md",
+      "articlePath": "wiki/articles/Comparison of Harmonic scalpel and Ligasure devices in laparoscopic Roux-en-Y gastric bypass.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/雙極血管封合器.md"
+        "wiki/概念/超音波手術刀在 LRYGB 手術中的應用.md",
+        "wiki/概念/LRYGB 術中煙霧管理.md"
       ],
-      "updatedAt": "2026-04-13T07:18:12.778Z"
+      "updatedAt": "2026-04-18T05:27:58.890Z"
     },
     "raw/ST2-P12_Samal S 2024_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:37cdf457169a42d2e098573be35c268a4836263f503ca497692c62b1526fc7c6",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中單極電燒與超音波刀之比較分析.md",
+      "articlePath": "wiki/articles/Comparative Analysis of Monopolar Electrocautery and Ultrasonic Activated Scalpel in Laparoscopic Cholecystectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md",
-        "wiki/概念/雙極電燒.md"
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md",
+        "wiki/概念/腹腔鏡膽囊切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:17:30.044Z"
+      "updatedAt": "2026-04-18T05:04:57.460Z"
     },
     "raw/ST2-P22_Mulita 2023_Harmonic Focus.pdf": {
       "fingerprint": "pdf:37a77921e70f1c5312cb9212a21f0765eb84279c555e97d912c7481040d6fb5e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/甲狀腺切除術中超音波刀與雙極血管封合器之術後出血比較研究.md",
+      "articlePath": "wiki/articles/Comparison of postoperative bleeding using harmonic scalpel and LigaSure in thyroid surgery a 15-year single-centre retr.md",
       "conceptPaths": [
-        "wiki/概念/Thyroidectomy.md",
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/雙極血管封合器.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/LigaSure.md"
       ],
-      "updatedAt": "2026-04-13T07:19:15.192Z"
+      "updatedAt": "2026-04-18T05:01:17.374Z"
     },
     "raw/ST2-P35_Kalari P 2022_harmonic scalpel.pdf": {
       "fingerprint": "pdf:960d273e9c588af77d084ecd67102c1611bb503b2165156061816a1780ac75fc",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/大腸直腸癌手術中傳統雙極電燒與超音波刀之比較.md",
+      "articlePath": "wiki/articles/Comparison of Conventional Bipolar Electrocautery and Ultrasonic Harmonic Scalpel in Colorectal Cancer Surgeries.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
+        "wiki/概念/超音波手術刀在大腸直腸癌手術的應用.md",
         "wiki/概念/雙極電燒.md"
       ],
-      "updatedAt": "2026-04-13T07:19:27.244Z"
+      "updatedAt": "2026-04-18T04:58:02.075Z"
     },
     "raw/ST2-P34_Jing C 2022_conventional US and Harmonic ACE +7.pdf": {
       "fingerprint": "pdf:4b787dadac380c3e2b1f1017da31845ff7003d7365ca36ec0e57c157319b6783",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡胃切除術中新型超音波手術系統 (USES) 與傳統超音波刀 (CUS) 之臨床與經濟效益比較.md",
+      "articlePath": "wiki/articles/Ultrasonic surgical and electrosurgical system (USES) with conventional ultrasonic scalpel (CUS) in gastrectomy a retros.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統 (USES).md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/Harmonic ACE+7.md",
+        "wiki/概念/腹腔鏡輔助遠端胃切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:22:25.289Z"
+      "updatedAt": "2026-04-18T04:56:41.124Z"
     },
     "raw/ST2-P14_Tian Y 2024_UHS (Hou Ke Tianjin Model USE14).pdf": {
       "fingerprint": "pdf:8b1eeb41e8d2ec85c36219cad6f3a17d881f973082f4cb6befc2d8385e448955",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與電燒在乳癌腋下淋巴結手術中的療效比較.md",
+      "articlePath": "wiki/articles/Comparison of the effect of ultrasonic-harmonic scalpel and electrocautery in the treatment of axillary lymph nodes duri.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/電燒.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/超音波手術刀 (UHS) 工作原理.md",
+        "wiki/概念/乳癌腋下淋巴結處理之手術範圍.md",
+        "wiki/概念/乳癌術後腋下引流管理.md",
+        "wiki/概念/Modified Radical Mastectomy (MRM).md"
       ],
-      "updatedAt": "2026-04-13T07:20:38.865Z"
+      "updatedAt": "2026-04-18T05:04:13.069Z"
     },
     "raw/ST2-P33_Landoni L 2022_Harmonic Focus® + or Harmonic Ace® + shears .pdf": {
       "fingerprint": "pdf:abf1a279e95b15d0d22ebee38040e3bb070658b5ad860e5ce33fcc04c6edea5c",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/遠端胰臟切除術中釘合與超音波切除之隨機對照試驗.md",
+      "articlePath": "wiki/articles/A randomized controlled trial of stapled versus ultrasonic transection in distal pancreatectomy.md",
       "conceptPaths": [
-        "wiki/概念/遠端胰臟切除術.md",
-        "wiki/概念/超音波刀.md"
+        "wiki/概念/遠端胰臟切除術的切斷技術比較.md",
+        "wiki/概念/術後胰臟漏的風險因子.md",
+        "wiki/概念/PGA 強化釘合技術.md"
       ],
-      "updatedAt": "2026-04-13T07:20:26.668Z"
+      "updatedAt": "2026-04-18T04:59:48.528Z"
     },
     "raw/ST2-P46_Deori A 2021_Hormonic Focus (Ethicon).pdf": {
       "fingerprint": "pdf:ed0ca6dc867252f5072ce6770c47ae6a63f6ced8a633add51d6091b6cc78fa39",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波刀與電燒在乳癌腋下淋巴結廓清術之比較研究.md",
+      "articlePath": "wiki/articles/A Prospective Randomised Controlled Study Comparing Ultrasonic Dissector with Electrocautery for Axillary Dissection in .md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/漿液腫在乳房切除術後的成因與管理.md",
+        "wiki/概念/改良根除式乳房切除術 (MRM).md"
       ],
-      "updatedAt": "2026-04-13T07:22:58.762Z"
+      "updatedAt": "2026-04-18T04:52:53.595Z"
     },
     "raw/ST2-P44_Cattoni M 2021_Harmonic ACE Plus®.pdf": {
       "fingerprint": "pdf:67eecca4008513588aad6529190a90b702cba1aa3ad548a56c3466853f564555",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/胸腔鏡肺葉切除術中能量器械之安全性與術後影響：單極電燒與超音波刀之比較.md",
+      "articlePath": "wiki/articles/Energy devices safety and impact on video-assisted thoracoscopic lung lobectomy postoperative course monopolar electroca.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/電燒.md"
+        "wiki/概念/VATS 肺葉切除術中的能量設備比較.md",
+        "wiki/概念/Harmonic ACE Plus.md"
       ],
-      "updatedAt": "2026-04-13T07:22:41.090Z"
+      "updatedAt": "2026-04-18T04:54:25.573Z"
     },
     "raw/ST2-P38_Kim KE 2021_Harmonic Focus® Shears.pdf": {
       "fingerprint": "pdf:613b5cfe7d6e4c216a797bdc723d1cd6511585b7800640d684d5f83769efb4a5",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術系統在乳癌手術中的應用：回顧性世代研究.md",
+      "articlePath": "wiki/articles/Usefulness of using additional ultrasonic dissection device in breast cancer surgery a retrospective cohort study.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在乳癌手術的應用.md",
+        "wiki/概念/Harmonic Focus® Shears.md",
+        "wiki/概念/乳癌手術中的漿液腫形成.md"
       ],
-      "updatedAt": "2026-04-13T07:25:53.310Z"
+      "updatedAt": "2026-04-18T04:55:58.584Z"
     },
     "raw/ST2-P07_Blohm M 2024_Harmonic HD1000i Shears™.pdf": {
       "fingerprint": "pdf:6509659cc22a18ca324a347b903c1ff482beb1128201223e174ca051a502638a",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/急性膽囊炎腹腔鏡膽囊切除術中超音波刀與電燒之比較：隨機對照試驗 (SONOCHOL-trial).md",
+      "articlePath": "wiki/articles/Ultrasonic dissection versus electrocautery dissection in laparoscopic cholecystectomy for acute cholecystitis a randomi.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/SONOCHOL-trial.md",
+        "wiki/概念/超音波手術刀在急性膽囊炎手術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:23:13.413Z"
+      "updatedAt": "2026-04-18T05:20:35.830Z"
     },
     "raw/ST2-P45_Vaira LA 2021_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:06efa2dc52d8c130611669ce745e050d4bd7673b3fffe7df70c602ef0da931b4",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/頸部淋巴結廓清術中超音波刀與電燒之比較研究.md",
+      "articlePath": "wiki/articles/Neck dissection with harmonic instruments and electrocautery a prospective comparative study.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/電燒.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在頸部廓清術的應用.md",
+        "wiki/概念/頸部廓清術併發症.md"
       ],
-      "updatedAt": "2026-04-13T07:23:27.252Z"
+      "updatedAt": "2026-04-18T04:25:39.229Z"
     },
     "raw/ST2-P63_Lee SH 2019_Harmonic Focus.pdf": {
       "fingerprint": "pdf:500c5fbdce980db0964080289a578afd01ccb37f45e6188b75f8f6c1be315bb3",
@@ -537,115 +550,118 @@
       "fingerprint": "pdf:8c1f359b0ef4a67e6b47814f448ee91024092b4d5ddabfe1ebda1443b75b52b8",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡闌尾切除術中超音波手術系統與縫線結紮法之比較.md",
+      "articlePath": "wiki/articles/Comparison of Ultrasonic Dissection and Suture Ligation for Mesoappendix in Laparoscopic Appendectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/無縫線闌尾切除術.md"
+        "wiki/概念/超音波手術刀在腹腔鏡闌尾切除術的應用.md",
+        "wiki/概念/闌尾間膜.md"
       ],
-      "updatedAt": "2026-04-13T07:26:38.611Z"
+      "updatedAt": "2026-04-18T04:55:06.723Z"
     },
     "raw/ST2-P55_Gupta V 2020_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:3020d8d62f0939952cc86c8f4a00635bd81fe7aa379f67022f20c0111b3865ed",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用超音波手術刀進行無縫線闌尾切除術之可行性研究.md",
+      "articlePath": "wiki/articles/Sutureless Appendectomy by Using Harmonic Scalpel Is It Possible.md",
       "conceptPaths": [
-        "wiki/概念/無縫線闌尾切除術 (Sutureless Appendectomy).md",
-        "wiki/概念/超音波手術刀在闌尾切除術之應用.md",
-        "wiki/概念/闌尾基底部閉合技術比較.md"
+        "wiki/概念/無縫線闌尾切除術.md",
+        "wiki/概念/闌尾基底部密封技術比較.md",
+        "wiki/概念/闌尾基底部.md",
+        "wiki/概念/腹腔鏡闌尾切除術.md",
+        "wiki/概念/闌尾間膜.md"
       ],
-      "updatedAt": "2026-04-18T02:55:46.972Z"
+      "updatedAt": "2026-04-18T04:31:10.250Z"
     },
     "raw/ST2-P47_Mihanović J 2021_HARMONIC ACE® + Shears.pdf": {
       "fingerprint": "pdf:79692fb0bb7a48316c9a18ef531e4d107b4952d9a0e45a993d5f460093bac437",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/比較腹腔鏡闌尾切除術中使用全新與重複使用超音波刀之效能：隨機對照試驗.md",
+      "articlePath": "wiki/articles/Comparison of new versus reused Harmonic scalpel performance in laparoscopic appendectomy in patients with acute appendi.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/側向熱損傷.md"
+        "wiki/概念/超音波手術刀的重複使用安全性.md",
+        "wiki/概念/側向熱損傷 (Lateral Thermal Damage).md"
       ],
-      "updatedAt": "2026-04-13T07:24:39.872Z"
+      "updatedAt": "2026-04-18T04:33:42.229Z"
     },
     "raw/ST2-P54_Jiang J 2020_Hormonic Focus (Ethicon).pdf": {
       "fingerprint": "pdf:6be95dc0557f135fcb9dc1c6499804ad065544c9ce578823f34a780778538ed1",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀結合結紮技術於全甲狀腺切除術合併中央頸部廓清術之副甲狀腺功能保護研究.md",
+      "articlePath": "wiki/articles/Ultrasonic scalpel with knot tying protects parathyroid function for total thyroidectomy with central neck dissection.md",
       "conceptPaths": [
-        "wiki/概念/副甲狀腺保護技術 (Parathyroid Preservation Techniques).md",
-        "wiki/概念/暫時性副甲狀腺功能低下症 (Transient Hypoparathyroidism).md",
-        "wiki/概念/中央頸部廓清術 (Central Neck Dissection, CND).md"
+        "wiki/概念/CAT 技術 (Clamp and Tie Technique).md",
+        "wiki/概念/低副甲狀腺功能低下症 (Hypoparathyroidism).md",
+        "wiki/概念/超音波手術刀在甲狀腺手術中的熱損傷.md"
       ],
-      "updatedAt": "2026-04-18T02:56:42.352Z"
+      "updatedAt": "2026-04-18T04:32:53.941Z"
     },
     "raw/ST2-P58_Maisto M 2020_HARMONIC FOCUS®.pdf": {
       "fingerprint": "pdf:ab37ce3500d465f385a63aa9ea8eeb4448e78efb2c35915c3af050934b3a8be0",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/HARMONIC FOCUS 與傳統電燒在股動脈顯露術中的對比研究.md",
+      "articlePath": "wiki/articles/HARMONIC FOCUS VERSUS CONVENTIONAL ELECTROCAUTERY FOR FEMORAL ARTERY EXPOSURE A DIRECT COMPARISON ON THE SAME PATIENTS.md",
       "conceptPaths": [
         "wiki/概念/HARMONIC FOCUS.md",
-        "wiki/概念/股動脈顯露術 (Femoral Artery Exposure).md",
-        "wiki/概念/漿液腫 (Lymphocele).md"
+        "wiki/概念/淋巴囊腫.md",
+        "wiki/概念/EVAR 股動脈暴露.md"
       ],
-      "updatedAt": "2026-04-18T02:54:11.254Z"
+      "updatedAt": "2026-04-18T04:03:36.166Z"
     },
     "raw/ST2-P09_Gorginzadeh M 2024_Harmonic ACE.pdf": {
       "fingerprint": "pdf:83bada3abaa6539c7a2020b285284d07987d2659b937bab301f6049937bff7c6",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/比較腹腔鏡子宮切除術中單極電鉤與超音波手術刀的熱損傷：雙盲隨機對照試驗.md",
+      "articlePath": "wiki/articles/Comparing Thermal Damage Using Monopolar Hook Versus Harmonic Scalpel in Total Laparoscopic Hysterectomy; A Double-Blind.md",
       "conceptPaths": [
+        "wiki/概念/全腹腔鏡子宮切除術中的熱損傷比較.md",
         "wiki/概念/側向熱損傷.md",
-        "wiki/概念/超音波手術系統.md"
+        "wiki/概念/全腹腔鏡子宮切除術 (TLH).md"
       ],
-      "updatedAt": "2026-04-13T07:29:32.126Z"
+      "updatedAt": "2026-04-18T05:19:49.224Z"
     },
     "raw/ST2-P50_Memon F 2020_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:c1c0a9ab72e18a49d710a6cd3a7c72d617900cd56a310872d3e88938ae193567",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀與電燒在改良根除性乳房切除術中的成效比較.md",
+      "articlePath": "wiki/articles/Outcomes of Harmonic Scalpel and Electrocautery in Patients Who Underwent Modified Radical Mastectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在乳房切除術之應用.md",
-        "wiki/概念/改良根除性乳房切除術 (Modified Radical Mastectomy, MRM).md",
-        "wiki/概念/電燒在乳房手術中的限制.md"
+        "wiki/概念/超音波手術刀在乳房重建中的應用.md",
+        "wiki/概念/Mastectomy 併發症管理.md"
       ],
-      "updatedAt": "2026-04-18T02:58:08.060Z"
+      "updatedAt": "2026-04-18T04:51:05.435Z"
     },
     "raw/ST2-P11 Jung YC 2024_Harmonic HD 1000i shears.pdf": {
       "fingerprint": "pdf:cc2c49821a076afce84e86db8b3cbe6ed98d078fca31a836b0cdc241ddab76f1",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用剪切型超音波手術刀進行微創冠狀動脈繞道手術之無夾式內乳動脈擷取.md",
+      "articlePath": "wiki/articles/使用剪切尖端超音波手術刀進行微創冠狀動脈繞道手術之無夾式內乳動脈採取術.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/微創冠狀動脈繞道手術.md"
+        "wiki/概念/剪切尖端超音波手術刀 (Shear-tip Harmonic Scalpel).md",
+        "wiki/概念/微創冠狀動脈繞道手術 (MICABG).md",
+        "wiki/概念/內乳動脈採取術 (IMA Harvesting).md"
       ],
-      "updatedAt": "2026-04-13T07:29:42.579Z"
+      "updatedAt": "2026-04-18T05:11:50.594Z"
     },
     "raw/ST2-P39_Qaiser MU 2021_Intraoperative and postoperative outcomes.pdf": {
       "fingerprint": "pdf:825408d1be5d76c850626c3805e91338bcb312798940f76ed116ad65ce8e1e5c",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/Harmonic Focus 與單極電燒在乳房保留手術後之術中與術後結果比較.md",
+      "articlePath": "wiki/articles/Harmonic Focus 與單極電燒在術前輔助化療後乳房保留手術中的術中與術後結果比較研究.md",
       "conceptPaths": [
-        "wiki/概念/Harmonic Focus.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/Harmonic Focus 在乳房保留手術中的應用.md",
+        "wiki/概念/乳房保留手術 (BCS) 的術後併發症.md"
       ],
-      "updatedAt": "2026-04-13T07:29:55.985Z"
+      "updatedAt": "2026-04-18T04:53:39.458Z"
     },
     "raw/ST2-E62_Parwal C 2018_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:4dfb6ab5fef598acad21d51c8c68e592d48cb8a357cc32e267f5c6f32b6c9e46",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在血管畸形切除術中的應用.md",
+      "articlePath": "wiki/articles/Harmonic Devices The Workhorse for Surgical Resection of Vascular Malformations.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/血管畸形切除術.md"
+        "wiki/概念/超音波手術刀在血管畸形切除術的應用.md",
+        "wiki/概念/血管畸形 (Vascular Malformations).md"
       ],
-      "updatedAt": "2026-04-13T07:30:21.263Z"
+      "updatedAt": "2026-04-18T05:30:05.966Z"
     },
     "raw/ST2-P61_Lee D 2020_Harmonic Focus.pdf": {
       "fingerprint": "pdf:cbdc66745eb2446de1cad7fbb6286eecda99fe4de127f1be4fa86526ca48767a",
@@ -662,47 +678,48 @@
       "fingerprint": "pdf:8a94f4c5e166bf9ca4e1a8d95e4ef0cea84b95fb67768bcb9e36ec8834966e27",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀輔助之微創囊外剝離術治療下頜腺良性腫瘤.md",
+      "articlePath": "wiki/articles/Resection of benign tumours of the submandibular gland with harmonic scalpel-assisted minimally extracapsular dissection.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀輔助之微創囊外剝離術.md",
-        "wiki/概念/下頜腺.md",
-        "wiki/概念/超音波手術刀.md"
+        "wiki/概念/HS-MECD.md",
+        "wiki/概念/TGE.md",
+        "wiki/概念/下頜下腺腫瘤.md"
       ],
-      "updatedAt": "2026-04-18T02:52:44.892Z"
+      "updatedAt": "2026-04-18T04:29:16.767Z"
     },
     "raw/ST2-P10_Haval S 2024_Harmonic FOCUS.pdf": {
       "fingerprint": "pdf:9c50104ac8e2f6e9102fb6988acc656737d1cdadebb49525b8ffbca302e1ea8a",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀與電燒在改良式根治性乳房切除術之比較研究.md",
+      "articlePath": "wiki/articles/A Comparative Study of Harmonic Scalpel Versus Electrocautery Dissection in Modified Radical Mastectomy in Breast Carcin.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/改良式根治性乳房切除術.md"
+        "wiki/概念/超音波手術刀在乳癌手術的應用.md",
+        "wiki/概念/改良根除式乳房切除術 (MRM).md",
+        "wiki/概念/漿液腫在乳房切除術後的成因與管理.md"
       ],
-      "updatedAt": "2026-04-13T07:33:14.161Z"
+      "updatedAt": "2026-04-18T05:12:41.710Z"
     },
     "raw/ST2-P62_Basu S 2019_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:b05a4ac48f3ccf25a0cafd1309b8d9d9533535bf46206473e9d34b2ae59f5044",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀與電漿刀在扁桃腺切除術之比較研究.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel Versus Coblation Tonsillectomy A Comparative Study.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/電漿刀.md"
+        "wiki/概念/超音波手術刀在扁桃腺切除術的應用.md",
+        "wiki/概念/Coblation 技術.md"
       ],
-      "updatedAt": "2026-04-13T07:32:22.640Z"
+      "updatedAt": "2026-04-18T04:27:27.709Z"
     },
     "raw/ST2-P48_Wu CH 2021_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:3cc9c687b9ab2d4678938a2b2be84b8bad662f08449dbedb0fda56267082c89a",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在胰十二指腸切除術中切斷胰頸之影響.md",
+      "articlePath": "wiki/articles/Pancreatic neck transection using a harmonic scalpel increases risk of biochemical leak but not postoperative pancreatic.md",
       "conceptPaths": [
-        "wiki/概念/胰十二指腸切除術之胰頸切斷.md",
-        "wiki/概念/術後胰漏 (POPF).md",
-        "wiki/概念/超音波手術刀在胰臟手術之應用.md"
+        "wiki/概念/胰頸切斷與超音波手術刀.md",
+        "wiki/概念/術後胰臟漏 (POPF).md",
+        "wiki/概念/胰十二指腸切除術 (Pancreaticoduodenectomy).md"
       ],
-      "updatedAt": "2026-04-18T02:58:54.078Z"
+      "updatedAt": "2026-04-18T04:51:53.792Z"
     },
     "raw/ST2-P97_Kuo HH 2017_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:9d80c69a36098128afb40bb5598cc547539fd92847537fd9c01718348d06a091",
@@ -742,24 +759,25 @@
       "fingerprint": "pdf:a09a1abbd3170367e07e970be3443321f6c08da5dc6f2f522135a2801ad0b935",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在子宮頸錐形切除術後的短期與長期併發症及其對生活品質之影響.md",
+      "articlePath": "wiki/articles/Short- and long-term complications and the impact on quality of life after cervical conization by harmonic scalpel.md",
       "conceptPaths": [
-        "wiki/概念/子宮頸錐形切除術 (Cervical Conization).md",
-        "wiki/概念/術後生活品質 (Post-conization QoL).md",
-        "wiki/概念/超音波手術刀在子宮頸錐形切除術之應用.md"
+        "wiki/概念/子宮頸錐形切除術.md",
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-18T02:56:20.266Z"
+      "updatedAt": "2026-04-18T04:01:21.663Z"
     },
     "raw/ST2-P64_Uysal D 2019_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:94000ebf54592e6f8321125e59833b0e8b0f9de8e5f51d26343054c086506c2b",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/比較銳性剝離、電燒與超音波手術刀在橈動脈取用時對內皮損傷、準備時間及術後出血的影響.md",
+      "articlePath": "wiki/articles/Comparison of Sharp Dissection, Electrocautery, and Ultrasonic Activated Scalpel with Regard to Endothelial Damage, Prep.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在橈動脈取用之應用.md",
-        "wiki/概念/橈動脈取用之內皮損傷評估.md"
+        "wiki/概念/橈動脈採取術.md",
+        "wiki/概念/超音波手術刀.md",
+        "wiki/概念/內皮細胞損傷評估.md",
+        "wiki/概念/術後出血.md"
       ],
-      "updatedAt": "2026-04-13T07:34:25.320Z"
+      "updatedAt": "2026-04-18T04:24:54.107Z"
     },
     "raw/ST2-P73_Topdagi Yilmaz EP 2019_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:384599501f9bebce7e08aff67c85a0fa7320470f318e7b59068391982d946707",
@@ -787,24 +805,24 @@
       "fingerprint": "pdf:3cb77123f7c5774af7acadcdb3c75efbcb2677ebd303a6bd87d9c05076fddce6",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀與單極電燒在乳房重建第二階段囊腫切除術之比較.md",
+      "articlePath": "wiki/articles/Comparison of Harmonic scalpel and monopolar cautery for capsulectomy at the second stage of expander implant breast rec.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在囊腫切除術之應用.md",
-        "wiki/概念/囊腫切除術 (Capsulectomy).md",
-        "wiki/概念/單極電燒 (Monopolar Cautery).md"
+        "wiki/概念/超音波手術刀在乳房重建中的應用.md",
+        "wiki/概念/莢膜切除術 (Capsulectomy).md"
       ],
-      "updatedAt": "2026-04-18T02:54:54.718Z"
+      "updatedAt": "2026-04-18T04:31:50.476Z"
     },
     "raw/ST2-P59_Zatecky J 2020_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:9438af10be799fcd4797bec5b63c0da79b65cb35d082b045474184af706598a2",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/乳癌腋下淋巴結廓清術中超音波手術刀與電燒之比較研究.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel Versus Electrocautery in Axillary Dissection in Carcinoma Breast.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在腋下廓清術之應用.md",
-        "wiki/概念/腋下淋巴結廓清術後的感覺異常.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/肋間臂神經 (Intercostobrachial Nerve).md",
+        "wiki/概念/電燒在乳房手術的併發症.md"
       ],
-      "updatedAt": "2026-04-18T02:53:25.224Z"
+      "updatedAt": "2026-04-18T04:30:00.856Z"
     },
     "raw/ST2-P51_Kwek WMJ 2020_HARMONIC ACE®+ Shears.pdf": {
       "fingerprint": "pdf:919a7efe493475943ea9d18fa431be84a48b800b6e5180965db0aac73d44c8ff",
@@ -821,12 +839,14 @@
       "fingerprint": "pdf:9ccbb608e56646d32f76ecce08482315f37c1d86e1daaeca9cf0f3e492716e90",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/強化型縫合器與超音波手術刀在遠端胰臟切除術中胰臟斷面處理之比較.md",
+      "articlePath": "wiki/articles/Reinforced stapler versus ultrasonic dissector for pancreatic transection and stump closure for distal pancreatectomy A .md",
       "conceptPaths": [
-        "wiki/概念/強化型縫合器.md",
-        "wiki/概念/遠端胰臟切除術.md"
+        "wiki/概念/遠端胰臟切除術.md",
+        "wiki/概念/術後胰臟漏.md",
+        "wiki/概念/強化釘合器.md",
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-13T07:35:58.893Z"
+      "updatedAt": "2026-04-18T04:23:09.157Z"
     },
     "raw/ST2-P89_Yang X 2017_Harmonic Focus (FCS9).pdf": {
       "fingerprint": "pdf:aa945b2fc85f6e218cf4b5e1f1d4a38da6f4639c59d1c6a0228ea41e7543a90d",
@@ -844,12 +864,14 @@
       "fingerprint": "pdf:37de1621f697ef60b0a876d2c0884bb601fa4fe496a6f21d6d0fbc1fccbe31ce",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在肝實質切除術中對術後出血與膽汁滲漏之影響.md",
+      "articlePath": "wiki/articles/Impact of Ultrasonic Scalpels for Liver Parenchymal Transection on Postoperative Bleeding and Bile Leakage.md",
       "conceptPaths": [
+        "wiki/概念/肝實質切斷.md",
         "wiki/概念/超音波手術刀.md",
-        "wiki/概念/肝實質切除術.md"
+        "wiki/概念/術後膽汁洩漏.md",
+        "wiki/概念/術後出血.md"
       ],
-      "updatedAt": "2026-04-13T07:36:34.610Z"
+      "updatedAt": "2026-04-18T04:04:33.348Z"
     },
     "raw/ST2-P80_Rajnish K 2018_Harmonic Ace.pdf": {
       "fingerprint": "pdf:9c8ee5e3abb5120d61942e7d39ad70ed2899f0279a082fb8ddc5e417fea8d460",
@@ -866,12 +888,13 @@
       "fingerprint": "pdf:acd57c768eb31f6283ed79b0c0580bdda9b09cacb0aba549cd57f902ea7099a8",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/比較超音波手術刀與傳統止血法對甲狀腺手術中副甲狀腺功能的影響.md",
+      "articlePath": "wiki/articles/Comparison of the Effects of Focus Harmonic Scalpel and Conventional Haemostasis on Parathyroid Function in Thyroid Surg.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/術後低血鈣.md"
+        "wiki/概念/Focus Harmonic Scalpel.md",
+        "wiki/概念/低副甲狀腺功能低下症.md",
+        "wiki/概念/Thyroidectomy 副甲狀腺保護.md"
       ],
-      "updatedAt": "2026-04-13T07:36:21.456Z"
+      "updatedAt": "2026-04-18T04:23:55.255Z"
     },
     "raw/ST2-P96_Otsuka S 2017_Harmonic ACE.pdf": {
       "fingerprint": "pdf:6daf0b59cd3b9418bf6577e3814fe2a95639ac26bcd9a3c01bad57f8d0ea73e9",
@@ -889,11 +912,14 @@
       "fingerprint": "pdf:1c8408fdd6d2cd19f73dc8981810ade16d0cd158d49e29a78fd19c406728dd63",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/SanAgile™ SA01 超音波手術刀與 Johnson & Johnson 設備之療效與安全性比較研究.md",
+      "articlePath": "wiki/articles/Comparative evaluation of SanAgile™ SA01 ultrasonic scalpel and Johnson & Johnson GEN11, and HAR36 for efficacy and safe.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md"
+        "wiki/概念/SanAgile™ SA01.md",
+        "wiki/概念/超音波手術刀 (UHS) 工作原理.md",
+        "wiki/概念/超音波手術刀的臨床評估指標.md",
+        "wiki/概念/超音波手術刀的設備特性對比.md"
       ],
-      "updatedAt": "2026-04-13T07:38:26.432Z"
+      "updatedAt": "2026-04-18T05:21:34.795Z"
     },
     "raw/ST2-P79_Archana A 2018_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:1c78c9826d28dca2f043b2482df9078cfca2f42933a7f8bdd91a616d64644a4a",
@@ -910,12 +936,13 @@
       "fingerprint": "pdf:70743d310bda0fb37db517215bd9e2ebb594a07c0b3ea1aa93bfdd1c7752995e",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/胸腔鏡胸腺切除術中應用超音波能量封閉胸腺靜脈之安全性研究.md",
+      "articlePath": "wiki/articles/The safety of thymic vein sealing with ultrasonic energy in video-assisted thoracoscopic surgery thymectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在胸腺切除術之應用.md",
-        "wiki/概念/胸腺靜脈.md"
+        "wiki/概念/胸腺靜脈密封.md",
+        "wiki/概念/胸腺切除術.md",
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-13T07:38:01.382Z"
+      "updatedAt": "2026-04-18T04:22:14.804Z"
     },
     "raw/ST2-P72_Velotti N 2019_Harmonic Ace®.pdf": {
       "fingerprint": "pdf:c705b05c99eeda50b0255ede1d85356ff6688ec262d719d768f8231531b442e0",
@@ -955,57 +982,62 @@
       "fingerprint": "pdf:681fcf5f234a4a390febee0d9e1bc6ddfdfa811f7f8b0dd661f3182d79a5f03b",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/甲狀腺手術中結合先進止血墊與超音波手術刀之有效性研究.md",
+      "articlePath": "wiki/articles/Effectiveness of an advanced hemostatic pad combined with harmonic scalpel in thyroid surgery A prospective study.md",
       "conceptPaths": [
         "wiki/概念/Hemopatch.md",
-        "wiki/概念/超音波手術刀在甲狀腺手術之應用.md"
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:38:52.079Z"
+      "updatedAt": "2026-04-18T04:57:24.959Z"
     },
     "raw/ST2-P90_Pogorelić Z 2017_HARMONIC ACE®+ Shears.pdf": {
       "fingerprint": "pdf:4c1b907d900b97ecca29d70d7edc1a59887e159a6dbbcd6d29c46d00e17e6578",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/兒童腹腔鏡闌尾切除術中 mesoappendix 與闌尾基底部之側向熱損傷比較.md",
+      "articlePath": "wiki/articles/兒童腹腔鏡闌尾切除術中 mesoappendix 與闌尾基底部之側向熱損傷比較：超音波手術刀 (Ultracision)、雙極電燒 (LigaSure) 與熱融合技術 (MiSeal) 之研究.md",
       "conceptPaths": [
-        "wiki/概念/側向熱損傷 (Lateral Thermal Damage).md",
-        "wiki/概念/LigaSure™.md",
-        "wiki/概念/MiSeal™.md"
+        "wiki/概念/側向熱損傷.md",
+        "wiki/概念/超音波手術刀.md",
+        "wiki/概念/LigaSure.md",
+        "wiki/概念/MiSeal.md",
+        "wiki/概念/腹腔鏡闌尾切除術.md",
+        "wiki/概念/闌尾間膜.md",
+        "wiki/概念/闌尾基底部.md"
       ],
-      "updatedAt": "2026-04-18T02:54:28.874Z"
+      "updatedAt": "2026-04-18T04:02:35.044Z"
     },
     "raw/ST2-P114_Kawabata R 2016_Harmonic Ace.pdf": {
       "fingerprint": "pdf:7048711ac6255aff6410ba7e8e25c63467370dfbda68e1756323e36720bed064",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在開放式胃癌胃切除術之臨床效果：隨機第二期試驗.md",
+      "articlePath": "wiki/articles/A randomized phase II study of the clinical effects of ultrasonically activated coagulating shears (Harmonic scalpel) in.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/開放式胃切除術.md"
+        "wiki/概念/超音波手術刀在胃切除術的應用.md",
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-13T07:39:40.171Z"
+      "updatedAt": "2026-04-18T05:09:17.889Z"
     },
     "raw/ST2-P113_DeSerres JJ 2016_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:ffbbbe80bf380a26b56a54f37c2d3ec01fa02c2019c342fe6f372c2cf2da784d",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在頭頸部重建手術中游離皮瓣切取之應用.md",
+      "articlePath": "wiki/articles/Free Flap Elevation Times in Head and Neck Reconstruction Using the Harmonic Scalpel Shears.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/游離皮瓣切取.md"
+        "wiki/概念/超音波手術刀在頭頸重建手術的應用.md",
+        "wiki/概念/橈側前臂自由皮瓣 (RFFF).md",
+        "wiki/概念/腓骨自由皮瓣 (FFF).md"
       ],
-      "updatedAt": "2026-04-13T07:40:35.924Z"
+      "updatedAt": "2026-04-18T05:08:28.928Z"
     },
     "raw/ST2-P109_Mattila A 2016_Harmonic ACE.pdf": {
       "fingerprint": "pdf:84533323aaae2e1523d742a7b49fa9e4f1724bca9779138fa5117caa8017665b",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/日間腹腔鏡膽囊切除術：電燒鉤與超音波手術刀之比較研究.md",
+      "articlePath": "wiki/articles/Day-care laparoscopic cholecystectomy with diathermy hook versus fundus-first ultrasonic dissection a randomized study.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/腹腔鏡膽囊切除術.md"
+        "wiki/概念/腹腔鏡膽囊切除術 (Laparoscopic Cholecystectomy).md",
+        "wiki/概念/超音波手術刀在腹腔鏡膽囊切除術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:40:20.953Z"
+      "updatedAt": "2026-04-18T05:14:15.338Z"
     },
     "raw/ST2-P95_Gié O 2017_Harmonic Focus®.pdf": {
       "fingerprint": "pdf:1f186f294b31ff65f1b04949437a5f57709469aa65d17bb8d46ca42c61b96571",
@@ -1022,12 +1054,13 @@
       "fingerprint": "pdf:a291584f437933dff1cb57d216f5b5f93968392da33e1648c65c79b4cd6b9460",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/Floseal 與超音波手術刀在 Thyroidectomy 中的止血效果研究.md",
+      "articlePath": "wiki/articles/A Gelatin-Thrombin Matrix Topical Hemostatic Agent (Floseal) in Combination With Harmonic Scalpel Is Effective in Patien.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/Floseal.md"
+        "wiki/概念/Floseal.md",
+        "wiki/概念/超音波手術刀在甲狀腺手術的應用.md",
+        "wiki/概念/全甲狀腺切除術的止血策略.md"
       ],
-      "updatedAt": "2026-04-13T07:42:02.576Z"
+      "updatedAt": "2026-04-18T04:58:56.226Z"
     },
     "raw/ST2-P92_Arbin L 2017_Harmonic scalpel.pdf": {
       "fingerprint": "pdf:d1c09e2f442aeca1b1189f73a66ff5550535e1dd6caf1ce203753f0b5230d1ce",
@@ -1045,35 +1078,36 @@
       "fingerprint": "pdf:fe4d5f191654d29124202bb12ef4f3b9fc30e2dd435b15e2c64c2a39d2bf9358",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/二尖瓣手術中應用超音波手術刀進行慢性心房顫動消融術之研究.md",
+      "articlePath": "wiki/articles/Chronic Atrial Fibrillation Ablation with Harmonic Scalpel during Mitral Valve Surgery.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/慢性心房顫動的外科消融.md"
+        "wiki/概念/超音波手術刀在心房顫動燒灼術的應用.md",
+        "wiki/概念/慢性心房顫動 (Chronic Atrial Fibrillation).md"
       ],
-      "updatedAt": "2026-04-13T07:41:30.563Z"
+      "updatedAt": "2026-04-18T05:13:28.643Z"
     },
     "raw/ST2-P94_Talha A 2017_Scissor harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:0c0dd218bcd80680f8fddc7c1a0555f0cfe41ea21fcf7bfbbb33df33e06a2aea",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/Ligasure 與超音波手術刀對比傳統電燒於切除性痔瘡切除術之隨機對照試驗.md",
+      "articlePath": "wiki/articles/Ligasure, Harmonic Scalpel versus conventional diathermy in excisional haemorrhoidectomy a randomized controlled trial.md",
       "conceptPaths": [
-        "wiki/概念/痔瘡切除術 (Haemorrhoidectomy).md",
-        "wiki/概念/Ligasure.md",
-        "wiki/概念/超音波手術刀在痔瘡切除術的應用.md"
+        "wiki/概念/痔瘡切除術.md",
+        "wiki/概念/LigaSure.md",
+        "wiki/概念/超音波手術刀.md"
       ],
-      "updatedAt": "2026-04-18T02:55:35.333Z"
+      "updatedAt": "2026-04-18T04:00:44.487Z"
     },
     "raw/ST2-P120_Longo B 2016_Harmonic scalpel(Ethicon) .pdf": {
       "fingerprint": "pdf:b1467a0904f8c025cba6a5bc5046d88113eaf79aeb34036abde044f66dcfd199",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/使用纖維蛋白密封劑與超音波刀於闊背肌皮瓣轉移手術之預期性對照研究.md",
+      "articlePath": "wiki/articles/Prospective control study using fibrin sealants and Harmonic® scalpel in Latissimus Dorsi flap transfer.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/背闊肌皮瓣轉移 (Latissimus Dorsi Flap Transfer).md",
+        "wiki/概念/Tisseel® 纖維蛋白密封劑 (Fibrin Sealants).md",
+        "wiki/概念/超音波手術刀在背闊肌皮瓣採取術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:42:27.539Z"
+      "updatedAt": "2026-04-18T05:06:01.296Z"
     },
     "raw/ST2-P85_Shanmugam S 2017_no device information.pdf": {
       "fingerprint": "pdf:7924b86f21e4a06cc40f66b771798065be31c96bd12ce4021d66371cf8e229af",
@@ -1090,99 +1124,104 @@
       "fingerprint": "pdf:9e6ee88fa13c2fe77729338ef87635f93b874a25f29017cd57f020b01bc2291f",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/甲狀腺全切除術：傳統縫合結紮技術與超音波手術刀或 Maxium 無縫線技術之比較.md",
+      "articlePath": "wiki/articles/Total thyroidectomy Conventional Suture Ligation technique versus sutureless techniques using Harmonic Scalpel or Maxium.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在甲狀腺手術之應用.md",
-        "wiki/概念/Maxium 雙極電燒系統.md"
+        "wiki/概念/全甲狀腺切除術的無縫線技術比較.md",
+        "wiki/概念/Maxium 設備.md"
       ],
-      "updatedAt": "2026-04-13T07:43:29.259Z"
+      "updatedAt": "2026-04-18T05:06:47.505Z"
     },
     "raw/ST2-P100_Mittal P 2017_Harmonic scalpel(Ethicon) .pdf": {
       "fingerprint": "pdf:0049687148dc22b45f7030709e6d38559047411c89a404d95e979b41f6cbe44a",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/改良式根治性乳房切除術中超音波手術刀與單極電燒之比較研究.md",
+      "articlePath": "wiki/articles/A Comparative Study of the Use of Harmonic Scalpel versus Unipolar Cautery in Modified Radical Mastectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在乳房手術之應用.md",
-        "wiki/概念/改良式根治性乳房切除術的術後併發症.md"
+        "wiki/概念/超音波手術刀在改良根除式乳房切除術的應用.md",
+        "wiki/概念/MRM 術後併發症管理.md"
       ],
-      "updatedAt": "2026-04-13T07:43:40.197Z"
+      "updatedAt": "2026-04-18T05:17:25.103Z"
     },
     "raw/ST2-P103_Fritz DK 2016_Harmonic Focus®.pdf": {
       "fingerprint": "pdf:c0f9132f458932d6317775a50593c38c582b98983a9685bfb39d868ce5c9bf94",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在晚期口腔癌切除與頸部淋巴結廓清術之影響：隨機臨床試驗.md",
+      "articlePath": "wiki/articles/Harmonic scalpel impact on blood loss and operating time in major head and neck surgery a randomized clinical trial.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/術中出血與手術時間.md"
+        "wiki/概念/超音波手術刀在頭頸部手術的應用.md",
+        "wiki/概念/口腔鱗狀細胞癌 (OSCC) 手術管理.md"
       ],
-      "updatedAt": "2026-04-13T07:43:49.836Z"
+      "updatedAt": "2026-04-18T05:18:08.807Z"
     },
     "raw/ST2-P110_Liao G 2016_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:05486d59e1a6313e5e262b5ab80e6b3a291be10512c6c24c2c03e30ff53c4975",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡膽囊切除術中超音波刀與單極電燒之比較.md",
+      "articlePath": "wiki/articles/Harmonic Scalpel versus Monopolar Electrocauterization in Cholecystectomy.md",
       "conceptPaths": [
-        "wiki/概念/超音波刀.md",
+        "wiki/概念/超音波手術刀 (UHS).md",
+        "wiki/概念/單極電燒.md",
         "wiki/概念/腹腔鏡膽囊切除術.md"
       ],
-      "updatedAt": "2026-04-13T07:44:02.167Z"
+      "updatedAt": "2026-04-18T05:10:56.469Z"
     },
     "raw/ST2-P15 (ST3-GS23)_Kang B 2024_Sonicision and Harmonic scalpel (Ethicon).pdf": {
       "fingerprint": "pdf:f7a7d615cf4bbae4faa70e48d2fbc877b4786614bc0501b19feab96e46bcdb43",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/內視鏡乳頭保留乳房切除術中無線超音波能量器械之應用研究.md",
+      "articlePath": "wiki/articles/Usefulness of cordless ultrasonic cutting energy devices in endoscopic nipple-sparing mastectomy a retrospective study.md",
       "conceptPaths": [
-        "wiki/概念/內視鏡乳頭保留乳房切除術.md",
-        "wiki/概念/乳房手術中的能量器械應用.md"
+        "wiki/概念/內視鏡保留乳頭乳房切除術 (E-NSM).md",
+        "wiki/概念/Sonicision.md",
+        "wiki/概念/超音波手術刀在乳癌手術的應用.md",
+        "wiki/概念/E-NSM 術後漿液腫管理.md"
       ],
-      "updatedAt": "2026-04-13T07:44:13.145Z"
+      "updatedAt": "2026-04-18T05:03:00.594Z"
     },
     "raw/ST2-P104_Militello G 2016_Harmonic scalpel(Ethicon).pdf": {
       "fingerprint": "pdf:299db0dce87c7a224ebc6a31ae1639a5508bc3643b5c9f568483d4d95cc42f1c",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在乳癌腋下淋巴結廓清術中的應用評估.md",
+      "articlePath": "wiki/articles/Is it really useful the Harmonic scalpel in axillary dissection for locally advanced breast cancer A case series.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀.md",
-        "wiki/概念/漿液腫.md"
+        "wiki/概念/超音波手術刀在腋下淋巴結廓清術的應用.md",
+        "wiki/概念/漿液腫在乳癌手術後的成因與管理.md"
       ],
-      "updatedAt": "2026-04-13T07:45:23.352Z"
+      "updatedAt": "2026-04-18T05:16:27.801Z"
     },
     "raw/ST2-P112_Nieboer TE 2016_Harmonic ACE1 +7 Shears.pdf": {
       "fingerprint": "pdf:3a0adf3c9260e42c2d5f49e0d1a1c5b40a44535adb9e056bff42ef7662b3d990",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/腹腔鏡子宮切除術中應用進階止血模式之超音波血管封合裝置臨床效能評估.md",
+      "articlePath": "wiki/articles/Clinical utility of a novel ultrasonic vessel sealing device in transecting and sealing large vessels during laparoscopi.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/全腹腔鏡子宮切除術.md"
+        "wiki/概念/Harmonic ACE+7 Shears.md",
+        "wiki/概念/全腹腔鏡子宮切除術 (TLH).md"
       ],
-      "updatedAt": "2026-04-13T07:44:33.469Z"
+      "updatedAt": "2026-04-18T05:10:01.822Z"
     },
     "raw/ST2-P117_Aspinen S 2016_Harmonic ACE.pdf": {
       "fingerprint": "pdf:fe6b65d2568957f56f93e3694ba85e285662ce6c3e563d8bc2a0f2563572c7a6",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/微創膽囊切除術：迷你開腹與腹腔鏡手術之超音波刀應用比較.md",
+      "articlePath": "wiki/articles/A randomized multicenter study of minilaparotomy cholecystectomy versus laparoscopic cholecystectomy with ultrasonic dis.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在膽囊切除術之應用.md",
-        "wiki/概念/迷你開腹膽囊切除術.md"
+        "wiki/概念/小切口開腹膽囊切除術.md",
+        "wiki/概念/腹腔鏡膽囊切除術.md",
+        "wiki/概念/超音波手術刀在膽囊切除術的應用.md"
       ],
-      "updatedAt": "2026-04-13T07:45:33.503Z"
+      "updatedAt": "2026-04-18T05:07:38.900Z"
     },
     "raw/ST2-P107 (ST3-P06)_Baker EH 2016_Soncision.pdf": {
       "fingerprint": "pdf:553993dd83c663aabd0db88ddbdfb746ea5d6676990f09aefe59a3e679ce9e21",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/無線超音波手術刀之上市後分析.md",
+      "articlePath": "wiki/articles/Postmarketing Analysis of a Novel, Cordless Ultrasonic Dissector.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md"
+        "wiki/概念/Sonicision.md",
+        "wiki/概念/無線超音波手術刀的人體工學優勢.md"
       ],
-      "updatedAt": "2026-04-13T07:45:44.918Z"
+      "updatedAt": "2026-04-18T05:15:48.298Z"
     },
     "raw/ST2-P99_El Shobary M 2017_harmonic scalpel.pdf": {
       "fingerprint": "pdf:97a499a8cd4bbe4e95bb76d4ec0e0d77ac344befeb25b603c1254d4cd3df07e6",
@@ -1200,33 +1239,35 @@
       "fingerprint": "pdf:8c76b08664b53bb81f6105a4387ef869f39f6a76bc54a85961272de3bf8afebd",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀與縫合結紮法在腹腔鏡闌尾切除術中闌尾根部閉合之比較研究.md",
+      "articlePath": "wiki/articles/A Comparative Study of Harmonic Scalpel Versus Suture Ligation for Appendix Base Closure in Patients With Appendicitis U.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在闌尾切除術之應用.md"
+        "wiki/概念/超音波手術刀在腹腔鏡闌尾切除術的應用.md",
+        "wiki/概念/闌尾基底部關閉技術.md",
+        "wiki/概念/Alvarado 評分系統.md"
       ],
-      "updatedAt": "2026-04-13T07:46:09.004Z"
+      "updatedAt": "2026-04-18T05:22:35.902Z"
     },
     "raw/ST2-P23_Kim SJ 2023_Sonicision and Harmonic HD 1000i.pdf": {
       "fingerprint": "pdf:91a7ec181951e2743aa98414a6dfff11cb3ab7e82767bbe8ca1db72946261a23",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/比較 Medisonic 與 Harmonic HD 1000i 及 Sonicision 超音波能量器械在腹腔鏡胃切除術之應用：先導隨機臨床試驗.md",
+      "articlePath": "wiki/articles/Comparison of Medisonic with Harmonic HD 1000i and Sonicision ultrasonic energy device in laparoscopic gastrectomy a pil.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術系統.md",
-        "wiki/概念/Medisonic.md"
+        "wiki/概念/Medisonic.md",
+        "wiki/概念/超音波凝固剪 (Ultrasonic Coagulating Shears).md"
       ],
-      "updatedAt": "2026-04-13T07:46:25.180Z"
+      "updatedAt": "2026-04-18T05:00:34.300Z"
     },
     "raw/ST2-P108_Minni A 2016_Focus Harmonic Scalpel.pdf": {
       "fingerprint": "pdf:282b562589c43ad50c18f3a559be595d0cecf596f7cc2d2e1fe8249695719718",
       "compileProfile": "zh-hant-v2",
       "sourceKind": "pdf",
-      "articlePath": "wiki/articles/超音波手術刀在甲狀腺手術之應用與對發聲功能的影響.md",
+      "articlePath": "wiki/articles/Study on the use of focus harmonic scalpel in thyroidectomies is it useful also in preserving voice function.md",
       "conceptPaths": [
-        "wiki/概念/超音波手術刀在甲狀腺手術之應用.md",
-        "wiki/概念/甲狀腺手術後的發聲功能評估.md"
+        "wiki/概念/Focus Harmonic Scalpel.md",
+        "wiki/概念/Thyroidectomy 聲音功能保護.md"
       ],
-      "updatedAt": "2026-04-13T07:45:12.716Z"
+      "updatedAt": "2026-04-18T05:15:02.538Z"
     }
   },
   "embeddingsCache": {}

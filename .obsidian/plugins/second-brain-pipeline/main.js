@@ -533,7 +533,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async writeGlossary(glossaryObj) {
     const glossaryPath = "system/glossary.json";
-    await this.writeGeneratedFile(glossaryPath, JSON.stringify(glossaryObj, null, 2));
+    await this.writeText(glossaryPath, JSON.stringify(glossaryObj, null, 2));
   }
 
   async mergeGlossaryMappings(newMappings) {
@@ -2200,6 +2200,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "TASK",
       "1. Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
       "2. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
+      "3. Pay special attention to 'brokenLinks' in SCAN RESULTS. If a target is a long academic paper title or a non-standard name, identify the corresponding standard concept and suggest it in `new_glossary_mappings` (e.g., matching a long paper title to its core concept) so the system can autonomously fix it via these mappings.",
     ].join("\n");
     
     this.updateStatus("⚖️ Phase 4: Maintenance", "正在產出報告...");
