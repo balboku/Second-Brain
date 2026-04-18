@@ -33,6 +33,8 @@ desktop.ini
 wiki/
 system/index/
 system/lint/report-*.md
+system/glossary.json
+!system/README.md
 !system/index/.gitkeep
 
 # Plugin Specific
