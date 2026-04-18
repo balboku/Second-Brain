@@ -1,18 +1,39 @@
-# Obsidian
+# Obsidian Internal
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache/
-.obsidian/plugins/obsidian-git/
+.obsidian/indexed
+.obsidian/graph.json
+.obsidian/hotkeys.json
+.obsidian/appearance.json
 
-# OS files
+# Security & Secrets (Crucial)
+.env
+.env.*
+!.env.example
+.obsidian/plugins/*/data.json
+.obsidian/plugins/**/data.json
+**/node_modules/
+secrets/
+
+# OS/System files
 .DS_Store
 Thumbs.db
-
-# Any local config
-.env
-
-*.pdf
 *.ini
+desktop.ini
 
-# Second Brain Folders
+# Binary Content
+*.pdf
+*.zip
+*.tar.gz
+*.mp4
+*.mp3
+
+# Second Brain Flow Control
 wiki/
+system/index/
+system/lint/report-*.md
+!system/index/.gitkeep
+
+# Plugin Specific
+.obsidian/plugins/obsidian-git/

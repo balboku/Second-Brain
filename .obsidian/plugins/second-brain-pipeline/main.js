@@ -377,6 +377,10 @@ class SecondBrainPipelinePlugin extends Plugin {
   async onload() {
     await this.loadSettings();
 
+    this.statusEl = this.addStatusBarItem();
+    this.lastMainStatus = "💤 閒置";
+    this.updateStatus(this.lastMainStatus);
+
     this.addSettingTab(new SecondBrainPipelineSettingTab(this.app, this));
 
     this.addCommand({
@@ -440,10 +444,32 @@ class SecondBrainPipelinePlugin extends Plugin {
     try {
       await task();
     } catch (error) {
+      this.updateStatus("❌ 發生錯誤");
       console.error(`[${PLUGIN_ID}]`, error);
       const message = error instanceof Error ? error.message : String(error);
       new Notice(`Second Brain Pipeline failed: ${message}`, 10000);
     }
+  }
+
+  /**
+   * Update the status bar item.
+   * @param {string} text Main status text
+   * @param {string} subStatus Optional progress or sub-task info
+   */
+  updateStatus(text, subStatus = "") {
+    if (subStatus !== "🧠 Gemini 思考中...") {
+      this.lastMainStatus = text;
+    }
+    const display = subStatus ? `Brain: ${text} (${subStatus})` : `Brain: ${text}`;
+    this.statusEl.setText(display);
+  }
+
+  /**
+   * Reset status to idle after a short delay.
+   */
+  clearStatus(finishedLabel = "✅ 已完成") {
+    this.updateStatus(finishedLabel);
+    setTimeout(() => this.updateStatus("💤 閒置"), 5000);
   }
 
   getApiKey() {
@@ -820,6 +846,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
     const maxAttempts = Math.max(1, (Number(this.settings.retryCount) || 0) + 1);
 
+    this.updateStatus(this.lastMainStatus || "🤖 執行中", "🧠 Gemini 思考中...");
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       const response = await fetch(url, {
         method: "POST",
@@ -831,6 +858,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       });
 
       if (response.ok) {
+        this.updateStatus(this.lastMainStatus || "🤖 執行中");
         return response.json();
       }
 
@@ -1396,6 +1424,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async runPhase1(options = {}) {
     const silent = Boolean(options.silent);
+    this.updateStatus("📡 Phase 1: Ingesting...");
     await this.ensureFolder(this.settings.rawFolder);
     await this.ensureFolder(this.settings.stagingFolder);
     await this.ensureFolder("system/index");
@@ -1424,6 +1453,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     await this.updatePendingFileIndex(rawFiles, stagingFiles);
 
     if (!silent) {
+      this.clearStatus();
       new Notice(
         `Phase 1 complete. raw: ${rawFiles.length}, staged text files: ${stagedCount}, pdf for direct compile: ${directPdfCount}`,
         7000
@@ -1471,7 +1501,9 @@ class SecondBrainPipelinePlugin extends Plugin {
     const skippedFiles = [];
     let cacheUpdated = false;
 
-    for (const file of compileFiles) {
+    const totalFiles = compileFiles.length;
+    for (const [index, file] of compileFiles.entries()) {
+      this.updateStatus("🧩 Phase 2: Compiling", `${index + 1}/${totalFiles}`);
       let uploadedFile = null;
       try {
         const sourcePath = cleanPath(file.path);
@@ -1584,6 +1616,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     }
 
     if (!silent) {
+      this.clearStatus();
       const parts = [
         `compiled ${compiledCount}`,
         `skipped unchanged ${unchangedCount}`,
@@ -1768,6 +1801,7 @@ class SecondBrainPipelinePlugin extends Plugin {
   }
 
   async runPhase3(query, options = {}) {
+    this.updateStatus("🔍 Phase 3: Querying...");
     const silent = Boolean(options.silent);
     await this.ensureFolder(this.settings.queriesFolder);
 
@@ -1827,6 +1861,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     await this.rebuildGlobalIndex();
 
     if (!silent) {
+      this.clearStatus();
       new Notice(`Phase 3 complete. Saved answer to ${filePath}`, 8000);
     }
     return { query, filePath };
@@ -1849,6 +1884,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async runQueuedQueries(options = {}) {
     const silent = Boolean(options.silent);
+    this.updateStatus("🔍 Phase 3: Queued Queries...");
     const queuePath = cleanPath(this.settings.queryQueuePath);
     const queueFile = this.app.vault.getAbstractFileByPath(queuePath);
     if (!(queueFile instanceof TFile)) {
@@ -1877,6 +1913,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     await this.app.vault.modify(queueFile, parsed.lines.join("\n"));
 
     if (!silent) {
+      this.clearStatus(`Processed ${processedCount} queued queries.`);
       new Notice(`Processed ${processedCount} queued queries.`, 7000);
     }
     return { processedCount };
@@ -2089,6 +2126,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async runPhase4(options = {}) {
     const silent = Boolean(options.silent);
+    this.updateStatus("⚖️ Phase 4: Maintenance...");
     await this.ensureFolder(this.settings.lintFolder);
 
     const lintFolderClean = cleanPath(this.settings.lintFolder);
@@ -2106,6 +2144,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     // --- Deterministic Auto-Fix FIRST (no AI, no backup) ---
     const autoFixLogs = [];
     if (this.settings.enableAutoFix) {
+      this.updateStatus("⚖️ Phase 4: Maintenance", "正在自動修復...");
       new Notice("Phase 4: 正在執行自動連結修復與用語對位...", 4000);
       
       // 1. Apply Glossary Mappings first
@@ -2162,7 +2201,8 @@ class SecondBrainPipelinePlugin extends Plugin {
       "1. Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
       "2. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
     ].join("\n");
-
+    
+    this.updateStatus("⚖️ Phase 4: Maintenance", "正在產出報告...");
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, LINT_SCHEMA);
     
     // Merge new glossary mappings if any
@@ -2239,6 +2279,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     );
 
     if (!silent) {
+      this.clearStatus();
       new Notice(`Phase 4 complete. Saved lint report to ${reportPath}`, 8000);
     }
     return {
@@ -2248,12 +2289,14 @@ class SecondBrainPipelinePlugin extends Plugin {
   }
 
   async runFullPipeline() {
+    this.updateStatus("🚀 Pipeline: Starting...");
     new Notice("Running Second Brain full pipeline...", 4000);
     const phase1 = await this.runPhase1({ silent: true });
     const phase2 = await this.runPhase2({ silent: true });
     const queued = await this.runQueuedQueries({ silent: true });
     const phase4 = await this.runPhase4({ silent: true });
 
+    this.clearStatus("✅ Pipeline Complete");
     new Notice(
       `Pipeline complete. raw=${phase1.rawCount}, staged=${phase1.stagedCount}, compiled=${phase2.compiledCount}, unchanged=${phase2.unchangedCount || 0}, queuedQueries=${queued.processedCount}, lintIssues=${phase4.issueCount}`,
       12000
@@ -2267,6 +2310,7 @@ class SecondBrainPipelinePlugin extends Plugin {
   }
 
   async runLinkAutoFix(options = {}) {
+    this.updateStatus("🔧 Auto-Fixing Links...");
     const silent = Boolean(options.silent);
     const wikiFiles = this.getAllFilesUnder(this.settings.wikiFolder)
       .filter((file) => file instanceof TFile && file.extension === "md");
@@ -2325,6 +2369,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     }
 
     if (!silent || fixCount > 0) {
+      this.clearStatus(`Repaired ${fixCount} links`);
       new Notice(`Auto-fix complete. Repaired ${fixCount} links.`, 8000);
     }
   }
