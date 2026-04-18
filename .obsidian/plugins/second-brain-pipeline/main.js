@@ -1348,7 +1348,6 @@ class SecondBrainPipelinePlugin extends Plugin {
       "7. CONSTRAINTS: Use the provided glossary for all [[wikilinks]] and #tags. If a glossary term has spaces, use hyphens '-' for tags (e.g., 'Breast Surgery' -> #Breast-Surgery).",
     ];
 
-    const glossary = await this.readGlossary();
     if (glossary && glossary.mappings) {
       intro.push("", "GLOSSARY MAPPINGS (Preferred terminology)", JSON.stringify(glossary.mappings, null, 2));
     }
@@ -1613,7 +1612,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "models/gemini-embedding-2-preview",
+        model: `models/${embeddingModel}`,
         content: { parts: [{ text }] }
       })
     });
