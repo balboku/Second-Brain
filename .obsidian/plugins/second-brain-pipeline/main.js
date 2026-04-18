@@ -1369,7 +1369,7 @@ class SecondBrainPipelinePlugin extends Plugin {
     }
   }
 
-  async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource, uploadedFile = null) {
+  async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource, uploadedFile = null, forcedConcepts = []) {
     const glossary = await this.readGlossary();
     const glossaryText = glossary ? `\nGLOSSARY MAPPINGS: ${JSON.stringify(glossary.mappings)}\n` : "";
 
@@ -1400,6 +1400,14 @@ class SecondBrainPipelinePlugin extends Plugin {
       "6. Identify any synonymous or near-synonymous terms with standard concepts and suggest them in `new_glossary_mappings`.",
       "7. CONSTRAINTS: Use the provided glossary for all [[wikilinks]] and #tags. If a glossary term has spaces, use hyphens '-' for tags (e.g., 'Breast Surgery' -> #Breast-Surgery).",
     ];
+
+    if (forcedConcepts && forcedConcepts.length > 0) {
+      intro.push(
+        "",
+        "MANDATORY EXTRACTION PROTOCOL",
+        `You MUST independently extract and generate comprehensive concept notes for the following concepts if they are mentioned in the text at all: ${forcedConcepts.join(", ")}.`
+      );
+    }
 
     if (glossary && glossary.mappings) {
       intro.push("", "GLOSSARY MAPPINGS (Preferred terminology)", JSON.stringify(glossary.mappings, null, 2));
@@ -1500,6 +1508,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async runPhase2(options = {}) {
     const silent = Boolean(options.silent);
+    const forcedConcepts = Array.isArray(options.forcedConcepts) ? options.forcedConcepts : [];
     await this.ensureFolder(this.settings.articlesFolder);
     await this.ensureFolder(this.settings.conceptsFolder);
     await this.ensureFolder(this.settings.wikiFolder);
@@ -1555,7 +1564,8 @@ class SecondBrainPipelinePlugin extends Plugin {
           workflowContext,
           existingConceptTitles,
           preparedSource,
-          uploadedFile
+          uploadedFile,
+          forcedConcepts
         );
 
         const result = await this.requestStructuredJsonWithParts(
@@ -2001,7 +2011,7 @@ class SecondBrainPipelinePlugin extends Plugin {
         // Match [[nonStandard]], [[nonStandard|alias]], [[path/to/nonStandard]], etc.
         const escapedNonStandard = nonStandard.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(
-          `\\[\\[(?:[^\\]]*\/)?${escapedNonStandard}(\\|[^\\]]*)?\\]\\]`,
+          `\\[\\[\\s*(?:[^\\]]*\\/)?${escapedNonStandard}\\s*(\\|[^\\]]*)?\\]\\]`,
           'gi'
         );
         const newContentLinks = content.replace(regex, (match, alias) => {
@@ -2050,7 +2060,7 @@ class SecondBrainPipelinePlugin extends Plugin {
    *   3. Create a minimal stub note in wiki/概念/ so the link resolves.
    * Modifies files in-place without backup. Returns log lines.
    */
-  async deterministicFixBrokenLinks(brokenLinks, allFilesWithContent) {
+  async deterministicFixBrokenLinks(brokenLinks, allFilesWithContent, mappings = {}) {
     const logs = [];
     if (!brokenLinks || brokenLinks.length === 0) return logs;
 
@@ -2084,8 +2094,11 @@ class SecondBrainPipelinePlugin extends Plugin {
         const targetStem = stemname(target);
         const targetStemLower = targetStem.toLowerCase();
 
+        // Strategy 0: Glossary Mappings (Highest Priority for explicit re-mapping)
+        let resolvedStem = mappings[target] || mappings[targetStem] || null;
+
         // Strategy 1: case-insensitive exact match
-        let resolvedStem = stemMap.get(targetStemLower) || null;
+        if (!resolvedStem) resolvedStem = stemMap.get(targetStemLower) || null;
 
         // Strategy 2: fuzzy match
         if (!resolvedStem) {
@@ -2129,7 +2142,7 @@ class SecondBrainPipelinePlugin extends Plugin {
         // Matches [[Stem]], [[Stem|alias]], [[any/path/Stem]], [[any/path/Stem|alias]]
         const escapedStem = targetStem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(
-          `\\[\\[(?:[^\\]]*\/)?${escapedStem}(\\|[^\\]]*)?\\]\\]`,
+          `\\[\\[\\s*(?:[^\\]]*\\/)?${escapedStem}\\s*(\\|[^\\]]*)?\\]\\]`,
           'gi'
         );
         const newContent = content.replace(regex, (_, alias) =>
@@ -2145,6 +2158,50 @@ class SecondBrainPipelinePlugin extends Plugin {
         await this.app.vault.modify(sourceFile, content);
         logs.push(`- ✅ **連結修復**: \`${filePath}\``);
       }
+    }
+    return logs;
+  }
+
+  /**
+   * Deterministic new-connection auto-fixer.
+   * Appends '## 關聯概念\n- [[Target]]' to the source file.
+   */
+  async deterministicApplyNewConnections(connections, allFilesWithContent) {
+    const logs = [];
+    if (!connections || connections.length === 0) return logs;
+
+    const fileMap = new Map();
+    for (const item of allFilesWithContent) {
+      fileMap.set(cleanPath(item.file.path), item);
+    }
+
+    for (const conn of connections) {
+      if (!conn.from || !conn.to) continue;
+      const fromPath = cleanPath(conn.from);
+      const toPath = cleanPath(conn.to);
+      const toStem = stemname(toPath);
+      
+      const item = fileMap.get(fromPath);
+      if (!item) continue;
+      
+      let content = item.content;
+      if (content.includes(`[[${toStem}]]`) || content.includes(`[[${toStem}|`)) {
+        continue;
+      }
+      
+      const linkToAdd = `- [[${toStem}]] <!-- ${conn.rationale || "Auto-linked by Phase 4"} -->`;
+      
+      if (content.includes("## 關聯概念")) {
+        content = content.replace("## 關聯概念", `## 關聯概念\n${linkToAdd}`);
+      } else if (content.includes("## 延伸閱讀")) {
+        content = content.replace("## 延伸閱讀", `## 延伸閱讀\n${linkToAdd}`);
+      } else {
+        content = content.trim() + `\n\n## 關聯概念\n${linkToAdd}\n`;
+      }
+      
+      await this.app.vault.modify(item.file, content);
+      item.content = content;
+      logs.push(`- 🔗 **新增連結**: \`${fromPath}\` -> \`${toStem}\``);
     }
     return logs;
   }
@@ -2181,7 +2238,7 @@ class SecondBrainPipelinePlugin extends Plugin {
 
       // 2. Fix Broken Links second
       const preScan = this.buildLintScan(filesWithContent);
-      const fixLogs = await this.deterministicFixBrokenLinks(preScan.brokenLinks, filesWithContent);
+      const fixLogs = await this.deterministicFixBrokenLinks(preScan.brokenLinks, filesWithContent, glossary?.mappings || {});
       autoFixLogs.push(...fixLogs);
       // Re-read updated files
       for (const item of filesWithContent) {
@@ -2242,6 +2299,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "   - EXAMPLE: If `brokenLinks` has `target: 'Reinforced stapler versus ultrasonic dissector...'`, and `AVAILABLE CONCEPTS` has `強化釘合器`, you MUST return a mapping: `{\"non_standard\": \"Reinforced stapler versus ultrasonic dissector...\", \"standard\": \"強化釘合器\"}`.",
       "   - This is the ONLY way the system can fix the issues autonomously. DO NOT just describe the fix in text; perform it via data.",
       "3. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
+      "4. MANDATORY ORPHAN PROTOCOL: For EVERY orphan page in `orphans`, you MUST suggest at least one link from an existing related page to the orphan page and place this in `new_connections`.",
     ].join("\n");
     
     this.updateStatus("⚖️ Phase 4: Maintenance", "正在分析狀況並尋求優化方案...");
@@ -2250,30 +2308,67 @@ class SecondBrainPipelinePlugin extends Plugin {
     // Merge new glossary mappings if any
     if (result.new_glossary_mappings && result.new_glossary_mappings.length > 0) {
       await this.mergeGlossaryMappings(result.new_glossary_mappings);
+    }
       
-      // --- Second-Pass Auto-Fix (Autonomous Fix based on AI suggestions) ---
-      if (this.settings.enableAutoFix) {
-        this.updateStatus("⚖️ Phase 4: Maintenance", "正在執行自主修復 (Second Pass)...");
-        const glossary = await this.readGlossary();
-        if (glossary && glossary.mappings) {
-          const secondPassGlossaryLogs = await this.deterministicApplyGlossaryMappings(filesWithContent, glossary.mappings);
-          autoFixLogs.push(...secondPassGlossaryLogs);
-        }
-        
-        // Re-scan and fix links again with new glossary
-        const interimScan = this.buildLintScan(filesWithContent);
-        const secondPassFixLogs = await this.deterministicFixBrokenLinks(interimScan.brokenLinks, filesWithContent);
-        autoFixLogs.push(...secondPassFixLogs);
+    // --- Second-Pass Auto-Fix (Autonomous Fix based on AI suggestions) ---
+    if (this.settings.enableAutoFix) {
+      this.updateStatus("⚖️ Phase 4: Maintenance", "正在執行自主修復 (Second Pass)...");
+      const glossary = await this.readGlossary();
+      if (glossary && glossary.mappings) {
+        const secondPassGlossaryLogs = await this.deterministicApplyGlossaryMappings(filesWithContent, glossary.mappings);
+        autoFixLogs.push(...secondPassGlossaryLogs);
+      }
+      
+      // Re-scan and fix links again with new glossary
+      const interimScan = this.buildLintScan(filesWithContent);
+      const secondPassFixLogs = await this.deterministicFixBrokenLinks(interimScan.brokenLinks, filesWithContent, glossary?.mappings || {});
+      autoFixLogs.push(...secondPassFixLogs);
 
-        // Re-read updated files again for final scan
-        for (const item of filesWithContent) {
-           try { item.content = await this.app.vault.cachedRead(item.file); } catch (_) {}
-        }
+      // Apply new connections to resolve orphans
+      if (result.new_connections && result.new_connections.length > 0) {
+        const newConnLogs = await this.deterministicApplyNewConnections(result.new_connections, filesWithContent);
+        autoFixLogs.push(...newConnLogs);
+      }
+
+      // Re-read updated files again for final scan
+      for (const item of filesWithContent) {
+         try { item.content = await this.app.vault.cachedRead(item.file); } catch (_) {}
       }
     }
 
     // Final Scan for Report (reflects state AFTER second-pass)
     scan = this.buildLintScan(filesWithContent);
+
+    // [STUB DETECTION & PHASE 2 RERUN PREPARATION]
+    const forcedConcepts = [];
+    let sourcesToInvalidate = new Set();
+    const stubMarker = "此頁面由 Phase 4 Auto-Fix 自動建立，請補充相關內容";
+    
+    for (const item of filesWithContent) {
+      if (item.content.includes(stubMarker)) {
+        const title = stemname(item.file.path);
+        forcedConcepts.push(title);
+        
+        // Find which articles mentioned this stub
+        for (const article of filesWithContent) {
+          if (article.file.path.includes("/articles/") && article.content.includes(`[[${title}`)) {
+             const match = article.content.match(/^source_path:\s*["']?([^"'\n\r]+)["']?/m);
+             if (match && match[1]) {
+               sourcesToInvalidate.add(match[1]);
+             }
+          }
+        }
+      }
+    }
+    
+    // Invalidate caches
+    if (this.settings.enableAutoFix && sourcesToInvalidate.size > 0 && forcedConcepts.length > 0) {
+      autoFixLogs.push(`- ♻️ **準備重跑 Phase 2**: 將針對 ${forcedConcepts.length} 個存根頁面重新編譯 ${sourcesToInvalidate.size} 份來源檔案。`);
+      for (const src of sourcesToInvalidate) {
+        this.removeCompileCacheEntry(src);
+      }
+      await this.saveData(this.settings);
+    }
 
     const autoFixSection = this.settings.enableAutoFix
       ? (autoFixLogs.length > 0 ? autoFixLogs.join("\n") : "- 沒有發現需要自動修復的項目。")
@@ -2344,6 +2439,22 @@ class SecondBrainPipelinePlugin extends Plugin {
       this.clearStatus();
       new Notice(`Phase 4 complete. Saved lint report to ${reportPath}`, 8000);
     }
+
+    if (this.settings.enableAutoFix && forcedConcepts.length > 0 && sourcesToInvalidate.size > 0) {
+      new Notice(`Scheduling Phase 2 to automatically expand stubs...`);
+      setTimeout(async () => {
+         try {
+           const res = await this.runPhase2({ silent: true, forcedConcepts });
+           if (res && res.compiledCount > 0) {
+             new Notice(`✅ Phase 2 背景自動擴充存根完成！成功重編 ${res.compiledCount} 份文檔。`);
+           }
+         } catch (e) {
+           new Notice(`❌ Phase 2 背景擴充失敗: ${e.message}`, 10000);
+           console.error("Phase 2 auto-expand error:", e);
+         }
+      }, 3000);
+    }
+
     return {
       reportPath,
       issueCount: (result.issues || []).length,
@@ -2374,65 +2485,30 @@ class SecondBrainPipelinePlugin extends Plugin {
   async runLinkAutoFix(options = {}) {
     this.updateStatus("🔧 Auto-Fixing Links...");
     const silent = Boolean(options.silent);
-    const wikiFiles = this.getAllFilesUnder(this.settings.wikiFolder)
-      .filter((file) => file instanceof TFile && file.extension === "md");
+    const wikiFolderClean = cleanPath(this.settings.wikiFolder);
+    const lintFolderClean = cleanPath(this.settings.lintFolder);
+
+    const files = this.getAllFilesUnder(this.settings.wikiFolder)
+      .filter((file) => file instanceof TFile && file.extension === "md")
+      .filter((file) => !file.path.startsWith(`${lintFolderClean}/`));
     
     const filesWithContent = [];
-    for (const file of wikiFiles) {
+    for (const file of files) {
       filesWithContent.push({
         file,
         content: await this.app.vault.cachedRead(file),
       });
     }
 
+    const glossary = await this.readGlossary();
     const scan = this.buildLintScan(filesWithContent);
-    const brokenLinks = scan.brokenLinks || [];
-    if (!brokenLinks.length) {
-      if (!silent) new Notice("No broken links to fix.");
-      return;
-    }
-
-    const allNoteTitles = filesWithContent.map(i => stemname(i.file.path));
-    let fixCount = 0;
-
-    for (const link of brokenLinks) {
-      const targetName = basename(link.target).replace(".md", "");
-      let bestMatch = null;
-      let highestSimilarity = 0;
-
-      for (const title of allNoteTitles) {
-        const sim = this.calculateSimilarity(targetName, title);
-        if (sim > highestSimilarity) {
-          highestSimilarity = sim;
-          bestMatch = title;
-        }
-      }
-
-      if (bestMatch && highestSimilarity > 0.8) {
-        const file = this.app.vault.getAbstractFileByPath(link.path);
-        if (file instanceof TFile) {
-          const content = await this.app.vault.cachedRead(file);
-          const regex = new RegExp(`\\[\\[${link.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\|[^\\]]+)?\\]\\]`, 'g');
-          const newContent = content.replace(regex, (match, alias) => {
-            const matchedFile = wikiFiles.find(f => stemname(f.path) === bestMatch);
-            if (matchedFile) {
-              const newPath = notePathFromFilePath(matchedFile.path);
-              return alias ? `[[${newPath}${alias}]]` : `[[${newPath}]]`;
-            }
-            return match;
-          });
-
-          if (newContent !== content) {
-            await this.app.vault.modify(file, newContent);
-            fixCount += 1;
-          }
-        }
-      }
-    }
-
-    if (!silent || fixCount > 0) {
-      this.clearStatus(`Repaired ${fixCount} links`);
-      new Notice(`Auto-fix complete. Repaired ${fixCount} links.`, 8000);
+    
+    const logs = await this.deterministicFixBrokenLinks(scan.brokenLinks, filesWithContent, glossary?.mappings || {});
+    
+    if (!silent || logs.length > 0) {
+      this.clearStatus(`Auto-Fix Complete`);
+      const msg = logs.length > 0 ? `Auto-fix complete:\n${logs.join("\n")}` : "No broken links found to fix.";
+      new Notice(msg, 8000);
     }
   }
 }
