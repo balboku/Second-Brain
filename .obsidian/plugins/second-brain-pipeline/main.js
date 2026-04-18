@@ -37,6 +37,7 @@ const TEXT_EXTENSIONS = new Set([
 const DEFAULT_SETTINGS = {
   geminiApiKey: "",
   geminiModel: "gemini-2.5-flash",
+  geminiEmbeddingModel: "gemini-embedding-2-preview",
   temperature: 0.2,
   maxContextChars: 120000,
   maxOutputTokens: 4096,
@@ -53,6 +54,7 @@ const DEFAULT_SETTINGS = {
   queryQueuePath: "system/queue/_queue.md",
   autoStageTextFiles: true,
   includeRawWhenStagingEmpty: true,
+  enableAutoFix: false,
   compileCache: {},
   embeddingsCache: {},
 };
@@ -1547,7 +1549,8 @@ class SecondBrainPipelinePlugin extends Plugin {
     if (!apiKey) {
       throw new Error("No Gemini API key found for embedding.");
     }
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2-preview:embedContent?key=${apiKey}`;
+    const embeddingModel = String(this.settings.geminiEmbeddingModel || "gemini-embedding-2-preview").trim();
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(embeddingModel)}:embedContent?key=${apiKey}`;
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1857,13 +1860,121 @@ class SecondBrainPipelinePlugin extends Plugin {
       missingFrontmatter,
     };
   }
+  /**
+   * Deterministic broken-link auto-fixer.
+   * For each broken link it tries, in order:
+   *   1. Exact case-insensitive stem match against existing notes.
+   *   2. Fuzzy stem match (similarity >= 0.6).
+   *   3. Create a minimal stub note in wiki/概念/ so the link resolves.
+   * Modifies files in-place without backup. Returns log lines.
+   */
+  async deterministicFixBrokenLinks(brokenLinks, allFilesWithContent) {
+    const logs = [];
+    if (!brokenLinks || brokenLinks.length === 0) return logs;
+
+    // Build lowercase-stem -> actual stemname map
+    const stemMap = new Map();
+    for (const item of allFilesWithContent) {
+      const s = stemname(item.file.path);
+      stemMap.set(s.toLowerCase(), s);
+    }
+
+    // Group by source file so we read/write each file only once
+    const byFile = new Map();
+    for (const bl of brokenLinks) {
+      if (!byFile.has(bl.path)) byFile.set(bl.path, new Set());
+      byFile.get(bl.path).add(bl.target);
+    }
+
+    for (const [filePath, targets] of byFile) {
+      if (filePath.includes("/lint/")) continue; // skip lint folder
+
+      const sourceFile = this.app.vault.getAbstractFileByPath(filePath);
+      if (!(sourceFile instanceof TFile)) {
+        logs.push(`- ⚠️ **找不到檔案**: \`${filePath}\``);
+        continue;
+      }
+
+      let content = await this.app.vault.read(sourceFile);
+      let modified = false;
+
+      for (const target of targets) {
+        const targetStem = stemname(target);
+        const targetStemLower = targetStem.toLowerCase();
+
+        // Strategy 1: case-insensitive exact match
+        let resolvedStem = stemMap.get(targetStemLower) || null;
+
+        // Strategy 2: fuzzy match
+        if (!resolvedStem) {
+          let bestSim = 0, bestStem = null;
+          for (const [lower, real] of stemMap) {
+            const sim = this.calculateSimilarity(targetStemLower, lower);
+            if (sim > bestSim) { bestSim = sim; bestStem = real; }
+          }
+          if (bestSim >= 0.6) resolvedStem = bestStem;
+        }
+
+        // Strategy 3: create stub
+        if (!resolvedStem) {
+          const stubPath = joinPath(this.settings.conceptsFolder, `${targetStem}.md`);
+          const stubContent = [
+            "---",
+            `title: "${targetStem}"`,
+            `description: "自動建立的存根頁面"`,
+            `type: "concept"`,
+            `generated_by: "${GENERATED_BY}"`,
+            `generated_at: "${nowIso()}"`,
+            "---",
+            "",
+            `# ${targetStem}`,
+            "",
+            "> 此頁面由 Phase 4 Auto-Fix 自動建立，請補充相關內容。",
+            "",
+          ].join("\n");
+          try {
+            await this.app.vault.create(stubPath, stubContent);
+            resolvedStem = targetStem;
+            stemMap.set(targetStem.toLowerCase(), targetStem);
+            logs.push(`- 🆕 **建立存根**: \`${stubPath}\``);
+          } catch (e) {
+            logs.push(`- ❌ **建立存根失敗**: \`${stubPath}\` (${e.message})`);
+            continue;
+          }
+        }
+
+        // Rewrite all occurrences in file content.
+        // Matches [[Stem]], [[Stem|alias]], [[any/path/Stem]], [[any/path/Stem|alias]]
+        const escapedStem = targetStem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(
+          `\\[\\[(?:[^\\]]*\/)?${escapedStem}(\\|[^\\]]*)?\\]\\]`,
+          'gi'
+        );
+        const newContent = content.replace(regex, (_, alias) =>
+          alias ? `[[${resolvedStem}${alias}]]` : `[[${resolvedStem}]]`
+        );
+        if (newContent !== content) {
+          content = newContent;
+          modified = true;
+        }
+      }
+
+      if (modified) {
+        await this.app.vault.modify(sourceFile, content);
+        logs.push(`- ✅ **連結修復**: \`${filePath}\``);
+      }
+    }
+    return logs;
+  }
 
   async runPhase4(options = {}) {
     const silent = Boolean(options.silent);
     await this.ensureFolder(this.settings.lintFolder);
 
+    const lintFolderClean = cleanPath(this.settings.lintFolder);
     const files = this.getAllFilesUnder(this.settings.wikiFolder)
-      .filter((file) => file instanceof TFile && file.extension === "md");
+      .filter((file) => file instanceof TFile && file.extension === "md")
+      .filter((file) => !file.path.startsWith(`${lintFolderClean}/`));
     const filesWithContent = [];
     for (const file of files) {
       filesWithContent.push({
@@ -1872,6 +1983,28 @@ class SecondBrainPipelinePlugin extends Plugin {
       });
     }
 
+    // --- Deterministic Auto-Fix FIRST (no AI, no backup) ---
+    const autoFixLogs = [];
+    if (this.settings.enableAutoFix) {
+      new Notice("Phase 4: 正在執行自動連結修復...", 4000);
+      const preScan = this.buildLintScan(filesWithContent);
+      const fixLogs = await this.deterministicFixBrokenLinks(preScan.brokenLinks, filesWithContent);
+      autoFixLogs.push(...fixLogs);
+      // Re-read updated files
+      for (const item of filesWithContent) {
+        try { item.content = await this.app.vault.cachedRead(item.file); } catch (_) {}
+      }
+      // Include newly created stub files so post-fix scan sees them
+      const newFiles = this.getAllFilesUnder(this.settings.wikiFolder)
+        .filter((f) => f instanceof TFile && f.extension === "md")
+        .filter((f) => !f.path.startsWith(`${lintFolderClean}/`))
+        .filter((f) => !filesWithContent.some((e) => e.file.path === f.path));
+      for (const f of newFiles) {
+        try { filesWithContent.push({ file: f, content: await this.app.vault.cachedRead(f) }); } catch (_) {}
+      }
+    }
+
+    // Build final scan (reflects state AFTER auto-fix)
     const scan = this.buildLintScan(filesWithContent);
     const workflowContext = await this.getWorkflowContext();
     const systemInstruction = [
@@ -1884,7 +2017,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "WORKFLOW DOCS",
       workflowContext,
       "",
-      "SCAN RESULTS",
+      "SCAN RESULTS (post auto-fix — these are remaining issues only)",
       JSON.stringify(scan, null, 2),
       "",
       "FILE SUMMARIES",
@@ -1894,13 +2027,18 @@ class SecondBrainPipelinePlugin extends Plugin {
         .join("\n\n---\n\n"),
       "",
       "TASK",
-      "Summarize the wiki health, rank issues by severity, and suggest new concept links worth adding.",
+      "Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
     ].join("\n");
 
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, LINT_SCHEMA);
     const knownConceptTitles = filesWithContent
       .filter((item) => item.file.path.startsWith(`${cleanPath(this.settings.conceptsFolder)}/`))
       .map((item) => stemname(item.file.path));
+
+    const autoFixSection = this.settings.enableAutoFix
+      ? (autoFixLogs.length > 0 ? autoFixLogs.join("\n") : "- 沒有發現需要自動修復的項目。")
+      : "- Auto-Fix 功能目前為關閉狀態。";
+
     const reportPath = await this.writeGeneratedFile(
       joinPath(this.settings.lintFolder, `report-${timestampSlug()}.md`),
       [
@@ -1913,6 +2051,10 @@ class SecondBrainPipelinePlugin extends Plugin {
         }),
         "",
         "# Lint Report",
+        "",
+        "## 🔧 Auto-Fix 自動修復紀錄",
+        "",
+        autoFixSection,
         "",
         "## Overview",
         "",
@@ -1949,7 +2091,7 @@ class SecondBrainPipelinePlugin extends Plugin {
               .join("\n")
           : "No new connection suggestions.",
         "",
-        "## Deterministic Scan Snapshot",
+        "## Deterministic Scan Snapshot (post-fix)",
         "",
         "```json",
         JSON.stringify(scan, null, 2),
@@ -2090,6 +2232,19 @@ class SecondBrainPipelineSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
+      .setName("Gemini embedding model")
+      .setDesc("REST model name used for Phase 3 vector generation.")
+      .addText((text) =>
+        text
+          .setPlaceholder("gemini-embedding-2-preview")
+          .setValue(this.plugin.settings.geminiEmbeddingModel)
+          .onChange(async (value) => {
+            this.plugin.settings.geminiEmbeddingModel = value.trim();
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
       .setName("Temperature")
       .setDesc("Lower is more deterministic.")
       .addText((text) =>
@@ -2207,6 +2362,16 @@ class SecondBrainPipelineSettingTab extends PluginSettingTab {
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.includeRawWhenStagingEmpty).onChange(async (value) => {
           this.plugin.settings.includeRawWhenStagingEmpty = value;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Enable Auto-Fix (Phase 4)")
+      .setDesc("啟用後，Phase 4 會自動修復斷裂連結(包括大小寫不一致、路徑前綴错誤)，並對找不到對應頁面的連結自動建立存根頁面。修復結果將記錄於 Lint Report 中。")
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.enableAutoFix || false).onChange(async (value) => {
+          this.plugin.settings.enableAutoFix = value;
           await this.plugin.saveSettings();
         })
       );
