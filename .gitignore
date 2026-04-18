@@ -37,3 +37,4 @@ system/lint/report-*.md
 
 # Plugin Specific
 .obsidian/plugins/obsidian-git/
+copilot/

@@ -375,6 +375,7 @@ class TextPromptModal extends Modal {
 
 class SecondBrainPipelinePlugin extends Plugin {
   async onload() {
+    await this.loadEnv();
     await this.loadSettings();
 
     this.statusEl = this.addStatusBarItem();
@@ -434,6 +435,30 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  /**
+   * Load environment variables from a .env file in the vault root.
+   */
+  async loadEnv() {
+    try {
+      const content = await this.readText(".env");
+      if (!content) return;
+      const lines = content.split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) continue;
+        const index = trimmed.indexOf("=");
+        if (index === -1) continue;
+        const key = trimmed.slice(0, index).trim();
+        const value = trimmed.slice(index + 1).trim().replace(/^["']|["']$/g, "");
+        if (key && value && typeof process !== "undefined" && process.env) {
+          process.env[key] = value;
+        }
+      }
+    } catch (e) {
+      console.warn("[second-brain-pipeline] Failed to load .env file:", e);
+    }
   }
 
   async saveSettings() {
@@ -2424,7 +2449,7 @@ class SecondBrainPipelineSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Gemini API key")
-      .setDesc("Leave blank to use GEMINI_API_KEY or GOOGLE_API_KEY from the environment.")
+      .setDesc("注意：輸入在此處會儲存於 data.json。若要更高安全性，請將 Key 放在 Vault 根目錄的 .env 檔案中 (GEMINI_API_KEY=...) 並確保 .env 已加入 .gitignore。")
       .addText((text) => {
         text.inputEl.type = "password";
         text
