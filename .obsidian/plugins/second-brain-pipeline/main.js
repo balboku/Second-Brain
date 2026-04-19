@@ -64,22 +64,31 @@ const COMPILE_SCHEMA = {
   properties: {
     article_title: {
       type: "string",
-      description: "The cleaned title of the source article or document.",
+      description: "遵循『中文名 (英文名)』規範的乾淨標題。例如：『漿液腫 (Seroma)』",
     },
     article_summary: {
       type: "string",
-      description: "A concise 1-2 paragraph summary of the source.",
+      description: "1-2 段摘要，包含研究目的、主要對照組與最終核心結論。",
+    },
+    evidence_data: {
+      type: "object",
+      properties: {
+        sample_size: { type: "string", description: "例如：n=213" },
+        study_design: { type: "string", description: "例如：RCT, Retrospective, Meta-analysis等" },
+        p_values: { type: "array", items: { type: "string" }, description: "紀錄重要的統計顯著性數值" }
+      }
     },
     concept_notes: {
       type: "array",
       items: {
         type: "object",
         properties: {
-          title: { type: "string" },
-          summary: { type: "string" },
+          title: { type: "string", description: "概念標題，優先使用 Glossary，若無則採『中文 (英文)』格式" },
+          summary: { type: "string", description: "該概念在文獻中的定義與角色" },
+          clinical_insight: { type: "string", description: "該概念相關的臨床意義、優缺點或風險評估" },
           body: {
             type: "string",
-            description: "Markdown body for the concept note.",
+            description: "Markdown 本體。若有比較數據（如 A vs B），必須使用 Markdown 表格呈現。",
           },
           related_concepts: {
             type: "array",
@@ -98,8 +107,8 @@ const COMPILE_SCHEMA = {
       items: {
         type: "object",
         properties: {
-          non_standard: { type: "string", description: "The incorrect, alternate, or foreign term encountered in the text." },
-          standard: { type: "string", description: "The standardized central concept name." }
+          non_standard: { type: "string", description: "原文中出現的非標準語、外語或同義詞" },
+          standard: { type: "string", description: "對位後的標準核心概念名稱" }
         },
         required: ["non_standard", "standard"]
       }
@@ -569,6 +578,30 @@ class SecondBrainPipelinePlugin extends Plugin {
       return "";
     }
     return this.app.vault.cachedRead(file);
+  }
+
+  /**
+   * Simple template renderer that replaces {{KEY}} with values from vars object.
+   */
+  renderTemplate(template, vars = {}) {
+    return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+      return vars[key] !== undefined ? String(vars[key]) : match;
+    });
+  }
+
+  /**
+   * Loads a prompt from system/prompts/, splitting by '---' into [system, user].
+   * Falls back to providing default values if file is missing.
+   */
+  async loadPromptFile(path, defaultSystem = "", defaultUser = "") {
+    const content = await this.readText(path);
+    if (!content.trim()) {
+      return [defaultSystem, defaultUser];
+    }
+    const parts = content.split(/\n---\n/);
+    const system = parts[0]?.trim() || defaultSystem;
+    const user = parts[1]?.trim() || defaultUser;
+    return [system, user];
   }
 
   async readGlossary() {
@@ -1398,49 +1431,30 @@ class SecondBrainPipelinePlugin extends Plugin {
 
   async buildCompileRequest(file, workflowContext, existingConceptTitles, preparedSource, uploadedFile = null, forcedConcepts = []) {
     const glossary = await this.readGlossary();
-    const glossaryText = glossary ? `\nGLOSSARY MAPPINGS: ${JSON.stringify(glossary.mappings)}\n` : "";
+    const glossaryMappings = glossary ? JSON.stringify(glossary.mappings) : "(none)";
+    const glossaryMappingsJson = glossary ? JSON.stringify(glossary.mappings, null, 2) : "{}";
 
-    const systemInstruction = [
-      "You are an LLM compiler for an Obsidian-based personal knowledge base.",
-      "Follow the workflow documents as the governing rules.",
-      glossaryText,
-      "Write all human-readable output in Traditional Chinese used in Taiwan (zh-Hant).",
-      "When creating [[links]], prioritize the exact terms from the provided GLOSSARY MAPPINGS if a concept matches.",
-      "This rule applies even when the source document is in English or another language.",
-      "Keep formal standard numbers, product names, and unavoidable technical terms in their original form when needed.",
-      "Prefer concise, well-structured markdown.",
-      "Generate concept notes that are useful for long-term wiki growth.",
-      "Return JSON only.",
-    ].join(" ");
+    const [systemTemplate, userTemplate] = await this.loadPromptFile(
+      "system/prompts/phase-2-compile.md",
+      "You are a 'Structural Knowledge Compiler' specializing in medical and scientific literature.",
+      "WORKFLOW DOCS\n{{workflowContext}}\n\nSOURCE FILE PATH\n{{filePath}}\n\n{{mandatoryExtractionProtocol}}"
+    );
 
-    const intro = [
-      "WORKFLOW DOCS",
+    const mandatoryExtractionProtocol = (forcedConcepts && forcedConcepts.length > 0)
+      ? `\nMANDATORY EXTRACTION PROTOCOL\nYou MUST independently extract and generate comprehensive medical-grade concept notes for the following concepts if they are mentioned: ${forcedConcepts.join(", ")}.\n`
+      : "";
+
+    const vars = {
       workflowContext,
-      "",
-      "EXISTING CONCEPT TITLES",
-      existingConceptTitles.length ? existingConceptTitles.join(", ") : "(none)",
-      "",
-      "SOURCE FILE PATH",
-      file.path,
-      "",
-      "5. related_concepts should prefer titles from the existing concept list when relevant.",
-      "6. Identify any synonymous or near-synonymous terms with standard concepts and suggest them in `new_glossary_mappings`.",
-      "7. CONSTRAINTS: Use the provided glossary for all [[wikilinks]] and #tags. If a glossary term has spaces, use hyphens '-' for tags (e.g., 'Breast Surgery' -> #Breast-Surgery).",
-    ];
+      glossaryMappings,
+      glossaryMappingsJson,
+      existingConceptTitles: existingConceptTitles.length ? existingConceptTitles.join(", ") : "(none)",
+      filePath: file.path,
+      mandatoryExtractionProtocol,
+    };
 
-    if (forcedConcepts && forcedConcepts.length > 0) {
-      intro.push(
-        "",
-        "MANDATORY EXTRACTION PROTOCOL",
-        `You MUST independently extract and generate comprehensive concept notes for the following concepts if they are mentioned in the text at all: ${forcedConcepts.join(", ")}.`
-      );
-    }
-
-    if (glossary && glossary.mappings) {
-      intro.push("", "GLOSSARY MAPPINGS (Preferred terminology)", JSON.stringify(glossary.mappings, null, 2));
-    }
-
-    const introText = intro.join("\n");
+    const systemInstruction = this.renderTemplate(systemTemplate, vars);
+    const introText = this.renderTemplate(userTemplate, vars);
 
     if (preparedSource.sourceKind === "pdf" && uploadedFile) {
       return {
@@ -1869,29 +1883,20 @@ class SecondBrainPipelinePlugin extends Plugin {
 
     const workflowContext = await this.getWorkflowContext();
     const queryContext = await this.collectQueryContext(query);
-    const systemInstruction = [
-      "You are the Phase 3 query agent for an Obsidian knowledge base.",
-      "Answer strictly from the provided vault context when possible.",
-      "If context is incomplete, say what is missing and infer carefully.",
-      "Write the answer title and markdown in Traditional Chinese used in Taiwan (zh-Hant).",
-      "Keep standard names and acronyms in their original form when needed.",
-      "Return JSON only.",
-    ].join(" ");
-    const userPrompt = [
-      "WORKFLOW DOCS",
+    const [systemTemplate, userTemplate] = await this.loadPromptFile(
+      "system/prompts/phase-3-query.md",
+      "You are the Phase 3 query agent.",
+      "QUESTION\n{{question}}\n\nVAULT CONTEXT\n{{vaultContext}}"
+    );
+
+    const vars = {
       workflowContext,
-      "",
-      "QUESTION",
-      query,
-      "",
-      "VAULT CONTEXT",
-      queryContext.context || "(no vault context found)",
-      "",
-      "TASK",
-      "Produce a title, a markdown answer, and the list of source paths you actually used.",
-      "The markdown answer should be suitable to save directly as a note in wiki/queries/.",
-      "Use Traditional Chinese for the title and answer unless a standard name should remain original.",
-    ].join("\n");
+      question: query,
+      vaultContext: queryContext.context || "(no vault context found)",
+    };
+
+    const systemInstruction = this.renderTemplate(systemTemplate, vars);
+    const userPrompt = this.renderTemplate(userTemplate, vars);
 
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, QUERY_SCHEMA);
     const title = sanitizeFileName(result.answer_title || query);
@@ -2334,42 +2339,26 @@ class SecondBrainPipelinePlugin extends Plugin {
     // Build final scan (reflects state AFTER first-pass auto-fix)
     let scan = this.buildLintScan(filesWithContent);
     const workflowContext = await this.getWorkflowContext();
-    const systemInstruction = [
-      "You are the Phase 4 lint agent for an Obsidian knowledge base.",
-      "Use the supplied scan results and workflow docs to generate a concise, actionable report.",
-      "Write the report in Traditional Chinese used in Taiwan (zh-Hant).",
-      "Return JSON only.",
-    ].join(" ");
-    const userPrompt = [
-      "WORKFLOW DOCS",
+    const [systemTemplate, userTemplate] = await this.loadPromptFile(
+      "system/prompts/phase-4-lint.md",
+      "You are the Phase 4 lint agent.",
+      "SCAN RESULTS\n{{scanResults}}"
+    );
+
+    const vars = {
       workflowContext,
-      "",
-      "AVAILABLE CONCEPTS",
-      knownConceptTitles.join(", "),
-      "",
-      "AVAILABLE ARTICLES",
-      knownArticleTitles.join(", "),
-      "",
-      "GLOSSARY MAPPINGS (Already Applied)",
-      JSON.stringify((await this.readGlossary())?.mappings || {}, null, 2),
-      "",
-      "SCAN RESULTS (post first-pass auto-fix — these are remaining issues only)",
-      JSON.stringify(scan, null, 2),
-      "",
-      "FILE SUMMARIES",
-      filesWithContent
+      availableConcepts: knownConceptTitles.join(", "),
+      availableArticles: knownArticleTitles.join(", "),
+      glossaryMappings: JSON.stringify((await this.readGlossary())?.mappings || {}, null, 2),
+      scanResults: JSON.stringify(scan, null, 2),
+      fileSummaries: filesWithContent
         .slice(0, 80)
         .map((item) => `FILE: ${item.file.path}\n${truncateText(item.content, 3000)}`)
         .join("\n\n---\n\n"),
-      "",
-      "TASK",
-      "1. Summarize the wiki health, rank remaining issues by severity, and suggest new concept links worth adding.",
-      "2. MANDATORY REPAIR PROTOCOL: For every issue in `brokenLinks` that corresponds to a long academic paper title or a non-standard name, you MUST identify the correct target from AVAILABLE CONCEPTS or AVAILABLE ARTICLES and suggest it in `new_glossary_mappings`.",
-      "   - EXAMPLE: If `brokenLinks` has `target: 'Reinforced stapler versus ultrasonic dissector...'`, and `AVAILABLE CONCEPTS` has `強化釘合器`, you MUST return a mapping: `{\"non_standard\": \"Reinforced stapler versus ultrasonic dissector...\", \"standard\": \"強化釘合器\"}`.",
-      "   - This is the ONLY way the system can fix the issues autonomously. DO NOT just describe the fix in text; perform it via data.",
-      "3. Identify any synonymous or near-synonymous terms used inconsistently and suggest them in `new_glossary_mappings`.",
-      "4. MANDATORY ORPHAN PROTOCOL: For EVERY orphan page in `orphans`, you MUST suggest at least one link from an existing related page to the orphan page and place this in `new_connections`.",
-    ].join("\n");
+    };
+
+    const systemInstruction = this.renderTemplate(systemTemplate, vars);
+    const userPrompt = this.renderTemplate(userTemplate, vars);
     
     this.updateStatus("⚖️ Phase 4: Maintenance", "正在分析狀況並尋求優化方案...");
     const result = await this.requestStructuredJson(systemInstruction, userPrompt, LINT_SCHEMA);

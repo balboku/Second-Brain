@@ -11,48 +11,46 @@
 本系統將知識庫視為一個「可編譯」的原始碼庫：
 - **LLM 即編譯器**：利用 LLM 的語言理解能力，將雜亂的原始資訊 (Raw) 提煉為結構化的知識 (Wiki)。
 - **結構化優先**：透過明確的目錄規範與 Metadata，建立可預測、可檢索的知識網絡。
-- **流程自動化**：將知識產出拆分為多個階段，確保每一步都有跡可循。
-- **用語標準化字典**：內建 `system/glossary.json` (預設不進入 Git 追蹤)，由 AI 自動建議同義詞對應，並在 Phase 4 自動修正全域連結。
-- **自主修復迴圈 (Self-Healing Loop)**：Phase 4 現在具備自主迭代能力，會自動修復連結、縫合孤立頁面，並針對空殼存根 (Stubs) 自動觸發 Phase 2 重編譯補齊內容，直到問題歸零。
-- **大型檔案處理**：整合 Gemini File API，支援大型 PDF 直接解析。
-- **混合檢索 (Hybrid Search)**：整合 Gemini Embedding 向量語意分析與字串比對，提供 RAG 查詢基礎。
+- **醫學等級結構化 (Medical GRADE)**：Phase 2 專門優化臨床數據提取，支援自動化擷取樣本數 (n)、研究設計與統計數據。
+- **AI 指令外部化 (Dynamic Prompts)**：核心 AI 提示詞已遷移至 `system/prompts/`，實現「邏輯與說明」的解耦。
+- **用語標準化字典**：內建 `system/glossary.json`，由 AI 自動建議，並由系統在全域自動執行連結替換。
+- **自主修復迴圈 (Self-Healing Loop)**：Phase 4 具備自主迭代能力，會自動修復連結、縫合孤立頁面，直到問題歸零。
+- **命名規範化**：全面強制落實「中文名 (英文名)」標準，解決編碼異常並提升檢索率。
+- **混合檢索 (Hybrid Search)**：整合向量語意分析與字串比對提供精準 RAG。
 
 ---
 
 ## 🏗️ 系統架構
 
 ```mermaid
-graph LR
-    P1[Phase 1: Ingest 攝取] --> P2[Phase 2: Compile 編譯]
-    P2 --> P3[Phase 3: Query & Enhance 查詢增強]
+graph TD
+    P1[Phase 1: Ingest] --> P2[Phase 2: Compile]
     P2 --> wiki
-    P3 --> wiki
-    P4 --> wiki
+    P4[Phase 4: Lint] -- 修正與對位 --> wiki
+    P3[Phase 3: Query] -- 參考維基解決疑問 --> user
     
-    P4 -- 偵測到 Stub --> P2
-    P4 -- 發現 Orphan --> wiki
-    
-    subgraph Storage
-        raw[(raw/ 原始文件)]
-        wiki[(wiki/ 結構化維基)]
+    subgraph Control_Center
+        Doc[system/Phases/ 流程手冊]
+        Prompt[system/prompts/ AI 模板]
+        Glossary[system/glossary.json 字典]
     end
     
-    P1 -.-> raw
-    raw -.-> P2
-    P2 -.-> wiki
-    P3 -.-> wiki
-    P4 -.-> wiki
+    Doc -. 指引 .-> P2 & P3 & P4
+    Prompt -. 控制 .-> P2 & P3 & P4
+    Glossary -. 校對 .-> P2 & P4
 ```
 
 ---
 
 ## 📂 目錄結構說明
 
-- **`raw/`**: 存放所有待處理的原始文件（如網頁剪輯、PDF、筆記草稿）。
-- **`staging/`**: 處理中的暫存區，用於過渡階段。
-- **`system/`**: **核心大腦**。存放流程規範、LLM Prompts、用語字典以及自動化指令。
-- **`wiki/`**: **最終產出物**。包含概念文章、整理後的文章、全域索引以及查詢紀錄。
-- **`Attachment/`**: 存放圖檔、PDF 等附件資源。
+- **`raw/`**: 存放待處理原始文件（PDF, Web Clip）。
+- **`system/`**: **核心治理區**。
+    - **`Phases/`**: 存放戰略流程手冊 (給人看的大綱)。
+    - **`prompts/`**: 存放技術提示詞模板 (給 AI 讀的密令)。
+    - **`glossary.json`**: 術語映射表。
+- **`wiki/`**: **結構化維基**。產出具備 YAML Metadata 的概念筆記與摘要。
+- **`Attachment/`**: 圖檔與附件。
 
 ---
 
@@ -61,15 +59,14 @@ graph LR
 | 階段 | 名稱 | 說明 | 關鍵特色 |
 | :--- | :--- | :--- | :--- |
 | **Phase 1** | **Ingest (攝取)** | 收集原始資訊並標準化。 | 自動搬移與過濾 |
-| **Phase 2** | **Compile (編譯)** | LLM 提煉概念、重構內容。 | **自動建議同義詞字典** |
-| **Phase 3** | **Query (查詢)** | 基於 Wiki 進行靈感碰撞與問答。 | **Embedding 向量檢索** |
-| **Phase 4** | **Lint (檢查)** | 檢查一致性、縫合孤立頁面與修復連結。 | **自主修復迴圈與存根自動擴充** |
+| **Phase 2** | **Compile (編譯)** | 醫學等級數據提煉。 | **n 值與 p 值自動擷取** |
+| **Phase 3** | **Query (查詢)** | 基於 Wiki 的 RAG 問答。 | **雙語混合檢索** |
+| **Phase 4** | **Lint (檢查)** | 全自動連結修正與語意自癒。 | **字典全域自動對位** |
 
 ---
 
 ## 🛠️ 開始使用
 
-1. **環境準備**：使用 Obsidian 開啟此資料夾，並啟用 `Second Brain Pipeline` 外掛。
 2. **設定 API**：在設定介面填入 Gemini API Key，並選擇偏好的生成模型與 Embedding 模型。
 3. **執行工作流**：
     - 將資料放入 `raw/`。
