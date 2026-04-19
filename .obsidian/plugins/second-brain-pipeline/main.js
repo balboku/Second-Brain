@@ -232,7 +232,22 @@ function renderArrayField(key, values) {
 }
 
 function nowIso() {
-  return new Date().toISOString();
+  const now = new Date();
+  const options = {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+  const formatter = new Intl.DateTimeFormat('en-CA', options);
+  const formatted = formatter.format(now).replace(',', 'T');
+  // Handle cases where comma might not be present or different separator
+  const iso = formatted.includes('T') ? formatted : formatted.replace(' ', 'T');
+  return `${iso}+08:00`;
 }
 
 function sleep(ms) {
@@ -240,7 +255,19 @@ function sleep(ms) {
 }
 
 function timestampSlug() {
-  return new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).formatToParts(now);
+  const map = new Map(parts.map(p => [p.type, p.value]));
+  return `${map.get('year')}${map.get('month')}${map.get('day')}T${map.get('hour')}${map.get('minute')}${map.get('second')}Z`;
 }
 
 function truncateText(text, limit) {
@@ -1206,7 +1233,7 @@ class SecondBrainPipelinePlugin extends Plugin {
       "",
       "## 最近更新",
       "",
-      `- ${new Date().toISOString().slice(0, 10)}: 自動重建索引`,
+      `- ${nowIso().slice(0, 10)}: 自動重建索引`,
       "",
     ].join("\n");
 
