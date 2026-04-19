@@ -33,10 +33,15 @@ desktop.ini
 # Second Brain Flow Control
 wiki/
 system/index/
-system/lint/report-*.md
+system/lint/
 system/glossary.json
 !system/README.md
 !system/index/.gitkeep
+
+# Proprietary & Temporary Data (CRITICAL FOR COMMERCE)
+raw/
+staging/
+scratch/
 
 # Plugin Specific
 .obsidian/plugins/obsidian-git/
